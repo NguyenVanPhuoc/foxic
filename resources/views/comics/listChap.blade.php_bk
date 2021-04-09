@@ -1,0 +1,125 @@
+@extends('templates.master')
+@section('title', $comic->title)
+@php
+    if(isset($seo)){
+        $seo_key = $seo->key;
+        $seo_value = $seo->value;
+    }else{
+        $seo_key = '';
+        $seo_value = '';
+    }
+@endphp
+@section('keywords', $seo_key)
+@section('description',$seo_value)
+@section('content')
+    <div id="comic-page" class="pages detail-comic">
+        <div class="breadcrumbs"><div class="container">{!! Breadcrumbs::render('catComic', $comic->title);  !!}</div></div>
+        <section class="page-content">
+            <div class="container">             
+                <div class="row">                    
+                    <div id="content" class="col-md-8" data-url = "{{ route('saveStarRate') }}">
+                        <div class="sec-title"><h2>{{ _('Thông tin truyện') }}</h2></div>
+                        <div class="summary">
+                            <h3 class="comic-title">{{ $comic->title }}</h3>
+                            <div class="row">
+                                <div class="col-sm-4 info">
+                                    <div class="wrap-book"><div class="book">{!! imageAuto($comic->image,$comic->title) !!}</div></div>
+                                    <ul class="meta">
+                                        <li><strong>{{ _('Tác giả: ') }}</strong>{!! getObjSlugTitleWriterInComic($comic->id) !!}</li>
+                                        <li><strong>{{ _('Thể loại: ') }}</strong>{!! getObjSlugTitleTypeInComic($comic->id) !!}</li>
+                                        @if (isset($comic->source))
+                                            <li><strong>{{ _('Nguồn: ') }}</strong>{{ $comic->source }}</li>
+                                        @endif
+                                        <li><strong>{{ _('Trạng thái: ') }}</strong>{{ (checkComicFull($comic->id)) ? 'Full' : 'Đang thực hiện' }}</li>
+                                    </ul>
+                                </div>
+                                <div class="col-sm-8 desc">                                
+                                    <div class="wrap-rate">
+                                        <div class="star-rating">
+                                            {!!csrf_field()!!}
+                                            <div class="rate" data-rate = "{{ $comic->rating }}" data-readonly = "{{ $readonly }}" data-id="{{ $comic->id }}"></div> 
+                                            <div id="hint"></div>                                   
+                                        </div>
+                                        @if($comic->votes != 0)
+                                            <div class="small">{{ _('Đánh giá: ') }}<strong>{{ round($comic->rating,1) }}</strong> {{ '/10 từ ' }}<strong>{{ $comic->votes.' lượt.' }}</strong></div>
+                                        @else
+                                            <div class="small">{{ _('Chưa có đánh giá!') }}</div>
+                                        @endif
+                                        <span class="view_all"><b>{{ _('Lượt xem: ') }}</b>{{ $views->view_all}}</span>    
+                                    </div>
+                                    <div class="short-desc">{!! $comic->desc !!}</div>
+                                    {{-- @handheld  --}}
+                                    <a href="#" class="view_more">{{ _('Xem thêm: ') }}</a>
+                                    {{-- @endhandheld --}}
+                                    @if($chaps_desc)
+                                        <div class="news_chaps">
+                                            <div class="title-h2"><h2>{{ _('Các chương mới nhất ') }}</h2></div>
+                                            <ul class="list-item">
+                                                @foreach($chaps_desc as $item)
+                                                    <li>
+                                                        <i class="fa fa-certificate"></i>
+                                                        <a href="{{ route('detailChap',['slugComic'=>$comic->slug,'slugChap'=>$item->slug]).'/' }}" title="{{ $comic->title.' - '.$item->chap.': '.$item->title }}">{{ $item->chap.': '.$item->title }}</a>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-chap">                            
+                            <div class="sec-title"><h2>{{ _('Danh sách chương') }}</h2></div>
+                            <ul class="list-item">                              
+                                @if ($chaps->isNotEmpty())
+                                    @foreach($chaps as $item)
+                                        <li>
+                                            <i class="fa fa-certificate"></i>
+                                            <a href="{{ route('detailChap',['slugComic'=>$comic->slug,'slugChap'=>$item->slug]).'/' }}" title="{{ $comic->title.' - '.$item->chap.': '.$item->title }}">{{ $item->chap.': '.$item->title }}</a>
+                                        </li>
+                                    @endforeach
+                                @else
+                                    <h5>{{ _('Truyện đang trong quá trình viết chương đầu tiên!') }}</h5>
+                                @endif
+                            </ul>
+                            <div class="text-center">
+                                @if( isset($order_by) && $order_by != '')
+                                    {!! $chaps->appends(['order_by'=>$order_by])->links() !!}
+                                @else
+                                    {{ $chaps->links() }}
+                                @endif
+                            </div>
+                        </div>
+                        <div class="comments">
+                            <div class="sec-title"><h2>{{ _('Bình luận truyện') }}</h2></div>
+                            <div class="fb-background-color">
+                                <div class="fb-comments" data-colorscheme="{{ (isset($_COOKIE['themeStyle']) && $_COOKIE['themeStyle'] == "dark-theme") ? 'dark' : 'light' }}" data-href="{{ route('listChap',$comic->slug) }}" data-width="100%" data-numposts="5"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="sidebar" class="col-md-4">
+                        <aside id="sb-writer" class="sb-comic">
+                            <div class="sb-title">
+                                <h3>{{ _('Truyện cùng tác giả') }}</h3>
+                            </div>
+                            <ul class="list-item">
+                                @if ($sames->isNotEmpty())
+                                    @foreach($sames as $item)
+                                        <li><span class="glyphicon glyphicon-chevron-right"></span><a href="{{ route('listChap',$item->slug).'/' }}" title="{{ $item->title }}">{{ $item->title }}</a></li>
+                                    @endforeach
+                                @endif
+                            </ul>                            
+                        </aside>
+                        {!! getListHotComic() !!}
+                    </div>                    
+                </div>
+            </div>
+       </section>
+    </div>
+    @if(isset($_COOKIE['themeStyle']) && $_COOKIE['themeStyle'] == "dark-theme"):
+        <style type="text/css">
+            .fb-comments {
+                filter: invert(1) hue-rotate(165deg) saturate(70%);
+            }
+        </style>
+    @endif
+@endsection

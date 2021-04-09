@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="{{ app()->getLocale() }}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="@yield('description')">
+    <meta name="key" content="@yield('key')">    
+    <meta name="author" content="Vietsmiler">
+    <title>Admin - @yield('title')</title>
+    <link rel="shortcut icon" href="{{ favicon() }}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+     @yield('css')
+    <link rel="stylesheet" type="text/css" href="{{ asset('public/css/select2.min.css') }}"> 
+    <link rel="stylesheet" type="text/css" href="{{ asset('public/css/all.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('public/css/bootstrap-datepicker.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('public/css/checkbox_radio.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('public/css/scrollbar.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('public/admin/css/dropzone.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('public/css/pnotify.custom.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('public/admin/css/admin.css') }}">
+    
+    <script type="text/javascript" src="{{ asset('public/js/jquery.min.js') }}"></script>
+    @yield('js')
+    <script type="text/javascript" src="{{ asset('public/js/select2.full.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('public/admin/js/popper.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('public/admin/js/bootstrap.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('public/js/bootstrap-datepicker.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('public/admin/ckeditor/ckeditor.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('public/admin/js/admin.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('public/admin/js/dropzone.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('public/js/validator.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('public/js/validator.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('public/js/jquery.scrollbar.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('public/js/cleave.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('public/js/sortable.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('public/js/pnotify.custom.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('public/admin/js/form-custom.js') }}"></script>
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jscroll/2.3.7/jquery.jscroll.js"></script>
+    <!--flatpickr-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/airbnb.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script type="text/javascript" src="{{ asset('public/js/flatpickr.js') }}"></script><!--//flatpickr-->
+    @handheld
+        <link rel="stylesheet" href="{{ asset('public/admin/css/responsive.css') }}">
+        <script type="text/javascript" src="{{ asset('public/admin/js/responsive.js') }}"></script>
+    @endhandheld
+    <script>
+        function ckeditor(name){
+            CKEDITOR.replace(name, {
+                filebrowserBrowseUrl: "{{ asset('public/admin/ckfinder/ckfinder.html') }}",
+                filebrowserImageBrowseUrl: "{{ asset('public/admin/ckfinder/ckfinder.html') }}",
+                filebrowserFlashBrowseUrl: "{{ asset('public/admin/ckfinder/ckfinder.html?type=Flash') }}",
+                filebrowserUploadUrl: "{{ asset('public/admin/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files') }}",
+                filebrowserImageUploadUrl: "{{ asset('public/admin/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images') }}",
+                filebrowserFlashUploadUrl: "{{ asset('public/admin/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash') }}"
+            } );
+        }
+        //preview image
+        function filePreview(input, id){
+            if(input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#'+id+' .image img').attr('src',e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $(document).ready(function(){
+            $(".img-upload .image input").change(function(){
+                var id = $(this).parents(".img-upload").attr("id");
+                $(this).parents(".img-upload").find(".thumb-media").val("");
+                filePreview(this, id);
+            });
+        })
+    </script>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="sidebar">
+            <h1 id="logo"><a href="{{URL::to('/admin')}}">{!! getLogo() !!}</a><a href="{{ route('home') }}" target="_blank" class="front-end"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></h1>
+            <div id="menu-scroll" class="scrollbar-inner">
+                <nav id="menu" role="navigation">
+                    <ul>
+                        <li class="has-children{{ Request::is('admin/pages','admin/pages/*')? ' active': '' }}">
+                            <a href="#"><i class="fa fa-home" aria-hidden="true"></i>{{ _('Trang') }}</a>
+                            <ul class="sub-menu">
+                                <li {{ (Route::currentRouteName() == 'pagesAdmin') ? ' class=active' : '' }}><a href="{{ route('pagesAdmin') }}">{{ _('Tẩt cả') }}</a></li>
+                                <li {{ (Route::currentRouteName() == 'createPageAdmin') ? ' class=active' : '' }}><a href="{{ route('createPageAdmin') }}">{{ _('Thêm mới') }}</a></li>
+                            </ul>
+                        </li>
+                        {{-- <li class="has-children{{ Request::is('admin/blog','admin/blog/*','admin/categories','admin/categories/*','admin/versions','admin/versions/*')? ' active': '' }}">
+                             <a href="#"><i class="fal fa-newspaper"></i>Bản tin</a>
+                             <ul class="sub-menu">
+                                 <li {{ Request::is('admin/blog') ? ' class=active' : '' }}><a href="{{ route('blogAdmin') }}">Tất cả</a></li>
+                                 <li {{ Request::is('admin/blog/create') ? ' class=active' : '' }}><a href="{{ route('storeBlogAdmin') }}">Thêm mới</a></li>
+                                 <li {{ Request::is('admin/categories') ? ' class=active' : '' }}><a href="{{ route('categoriesAdmin') }}">Danh mục</a></li>   
+                             </ul>
+                         </li> 
+                         <li class="has-children{{ Request::is('admin/orders','admin/orders/*')? ' active': '' }}">
+                             <a href="#"><i class="fa fa-file-o" aria-hidden="true"></i>Đơn hàng</a>
+                             <ul class="sub-menu">
+                                 <li {{ Request::is('admin/orders') ? ' class=active' : '' }}><a href="{{ route('ordersAdmin') }}">Tất cả</a></li>
+                             </ul>
+                         </li>  
+                         <li class="has-children{{ Request::is('admin/product','admin/product/*','admin/category-product','admin/category-product/*')? ' active': '' }}">
+                             <a href="#"><i class="fa fa-lemon-o" aria-hidden="true"></i>Sản phẩm</a>
+                             <ul class="sub-menu">
+                                 <li {{ Request::is('admin/product') ? ' class=active' : '' }}><a href="{{ route('productsAdmin') }}">Tất cả</a></li>
+                                 <li {{ Request::is('admin/product/create') ? ' class=active' : '' }}><a href="{{ route('storeProductAdmin') }}">Thêm mới</a></li>
+                                 <li {{ Request::is('admin/category-product') ? ' class=active' : '' }}><a href="{{ route('categoryProductAdmin') }}">Danh mục</a></li>
+                             </ul>
+                         </li> --}}
+                        <li class="has-children{{ Request::is('admin', 'admin/comics','admin/comics/*', 'admin/categories-comic','admin/categories-comic/*', 'admin/types-comic','admin/types-comic/*', 'admin/writers','admin/writers/*')? ' active': '' }}">
+                             <a href="#"><i class="fal fa-book-open"></i>{{ _('Truyện') }}</a>
+                             <ul class="sub-menu">
+                                 <li {{ (Route::currentRouteName() == 'comicsAdmin') ? ' class=active' : '' }}><a href="{{ route('comicsAdmin') }}">{{ _('Tẩt cả') }}</a></li>
+                                 <li {{ (Route::currentRouteName() == 'createComicAdmin') ? ' class=active' : '' }}><a href="{{ route('createComicAdmin') }}">{{ _('Thêm mới') }}</a></li>
+                                 <li {{ (Route::currentRouteName() == 'catComicsAdmin') ? ' class=active' : '' }}><a href="{{ route('catComicsAdmin') }}">{{ _('Danh mục truyện') }}</a></li>
+                                 <li {{ (Route::currentRouteName() == 'typeComicsAdmin') ? ' class=active' : '' }}><a href="{{ route('typeComicsAdmin') }}">{{ _('Thể loại truyện') }}</a></li>
+                                 <li {{ (Route::currentRouteName() == 'writersAdmin')? ' class=active' : '' }}><a href="{{ route('writersAdmin') }}">{{ _('Tác giả') }}</a></li>
+                             </ul>
+                        </li> 
+                        {{-- <li class="has-children{{ Request::is('admin/slides','admin/slides/*')? ' active': '' }}">
+                            <a href="#"><i class="fal fa-sliders-h"></i></i>Slides</a>
+                            <ul class="sub-menu">
+                                <li {{ Request::is('admin/slides') ? ' class=active' : '' }}><a href="{{route('slidesAdmin')}}">All slides</a></li>
+                                <li {{ Request::is('admin/slides/create') ? ' class=active' : '' }}><a href="{{route('createSlideAdmin')}}">Add new</a></li>
+                            </ul>
+                        </li> --}}
+                        {{-- <li class="has-children{{ Request::is('admin/review','admin/review/*')? ' active': '' }}">
+                            <a href="#"><i class="fal fa-comment"></i></i>Reviewes</a>
+                            <ul class="sub-menu">
+                                <li {{ Request::is('admin/review') ? ' class=active' : '' }}><a href="{{ route('reviewAdmin') }}">Tất cả</a></li>
+                                <li {{ Request::is('admin/review/create') ? ' class=active' : '' }}><a href="{{ route('storeReviewAdmin') }}">Thêm mới</a></li>
+                            </ul>
+                        </li> --}}
+                        <li class="has-children{{ Request::is('admin/users','admin/users/*')? ' active': '' }}">
+                            <a href="#"><i class="fa fa-users" aria-hidden="true"></i>{{ _('Thành viên') }}</a>
+                            <ul class="sub-menu">
+                                <li {{ (Route::currentRouteName() == 'users') ? ' class=active' : '' }}><a href="{{ route('users') }}">{{ _('Tẩt cả') }}</a></li>
+                                <li {{ (Route::currentRouteName() == 'createAdmin') ? ' class=active' : '' }}><a href="{{ route('createAdmin') }}">{{ _('Thêm mới') }}</a></li>
+                            </ul>
+                        </li>
+                        <li class="has-children{{ Request::is('admin/group-meta','admin/group-meta/*')? ' active': '' }}">
+                            <a href="#"><i class="fa fa-th-large"></i>Meta field</a>
+                            <ul class="sub-menu">
+                                <li {{ (Route::currentRouteName() == 'metas') ? ' class=active' : '' }}><a href="{{ route('metas') }}">{{ _('Tẩt cả') }}</a></li>
+                                <li {{ (Route::currentRouteName() == 'createMeta') ? ' class=active' : '' }}><a href="{{ route('createMeta') }}">{{ _('Thêm mới') }}</a></li>
+                            </ul>
+                        </li>
+                        <li class="has-children{{ Request::is('admin/media','admin/media/*','admin/media-cat','admin/media-cat/*')? ' active': '' }}">
+                            <a href="#"><i class="fal fa-images"></i>{{ _('Ảnh') }}</a>
+                            <ul class="sub-menu">
+                                <li {{ (Route::currentRouteName() == 'media') ? ' class=active' : '' }}><a href="{{ route('media') }}">{{ _('Tất cả') }}</a></li>
+                                <li {{ (Route::currentRouteName() == 'createMedia') ? ' class=active' : '' }}><a href="{{ route('createMedia') }}">{{ _('Thêm mới') }}</a></li>
+                                <li {{ (Route::currentRouteName() == 'mediaCat') ? ' class=active' : '' }}><a href="{{ route('mediaCat') }}">{{ _('Danh mục ảnh') }}</a></li>
+                            </ul>
+                        </li>
+                        <li class="has-children{{ Request::is('admin/setting','admin/setting/*','admin/menu','admin/menu/*')? ' active': '' }}">
+                            <a href="#"><i class="fa fa-cog"></i>Settings</a>
+                            <ul class="sub-menu">
+                                <li {{ Request::is('admin/menu','admin/menu/*') ? ' class=active' : '' }}><a href="{{ route('menu') }}">Menu</a></li>
+                                <li {{ Request::is('admin/setting/option') ? ' class=active' : '' }}><a href="{{ route('setting') }}">System</a></li>
+                                <li {{ Request::is('admin/setting/social-media') ? ' class=active' : '' }}><a href="{{ route('settingSocial') }}">Socail Media</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>  
+            </div>
+        </div>
+        <div id="content">
+            <header>@include('backend.layout.header')</header>
+            <main>
+                @yield('content')
+            </main>
+            <footer>{!! copyright() !!}</footer>
+        </div>
+    </div>
+    <div id="overlay"></div>
+    <div class="loading"><img src="{{ asset('/public/images/loading_red.gif') }}" alt="loading..."></div>
+</body>
+</html>

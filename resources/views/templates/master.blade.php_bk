@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="{{ app()->getLocale() }}">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="google-site-verification" content="nue2yPo8zEhxFTqyvWcherHQKvZKV0hwAS04gkFBN2g">
+        <title>@yield('title')</title>
+        <meta http-equiv="Content-Language" content="en">
+        <meta name="description" content="@yield('description')">
+        <meta name="keywords" content="@yield('keywords')">
+        <link rel="canonical" href="{{ url()->current().'/'}}"> 
+        <link rel="shortcut icon" href="{{ favicon() }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/css/normalize.css') }}" >
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/css/bootstrap.min.css') }}" >
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/css/owl.carousel.min.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/css/owl.theme.default.min.css') }}">
+        <!--flatpickr-->
+        {{-- <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/airbnb.css"> --}}
+        <!--flatpickr-->
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/css/airbnb.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/css/jquery-ui.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/css/pnotify.custom.min.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/css/scrollbar.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/css/select2.min.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/css/all.min.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/css/checkbox_radio.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/style.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/css/main.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/css/plus.css') }}">
+        @handheld <link rel="stylesheet" href="{{ asset('public/css/responsive.css') }}">@endhandheld
+    </head>
+    <body class="<?php if(isset($_COOKIE['themeStyle'])) echo $_COOKIE['themeStyle']; ?>">
+        <div id="fb-root"></div>
+        <div id="wrapper">
+            <header>
+                <div class="top">
+                    @desktop
+                        <div class="container flex item-center">
+                            <div class="header-lf clearfix flex item-center content-start">
+                                <figure id="logo"><a href="{{ route('home').'/' }}">{!! getLogo() !!}</a></figure>
+                                <ul class="menu-left list-unstyled flex item-center content-start">
+                                    <li class="dropdown">
+                                        <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown"><i class="fas fa-list"></i>{{ _(' Danh sách ') }}<i class="fas fa-caret-down"></i></a>
+                                        <ul class="dropdown-menu" role="menu">
+                                            @php 
+                                                $catComics = getListCatComic(); 
+                                                $catArticle = getListCatArticle();
+                                            @endphp
+                                            @foreach ($catComics as $cat)
+                                                <li><a href="{{ route('catChap',['slug'=>$cat->slug]).'/' }}" title="{{ $cat->title }}">{{ $cat->title }}</a></li>
+                                            @endforeach
+                                            @foreach ($catArticle as $item)
+                                                <li><a href="{{ route('cateArticle',['slug'=>$item->slug]).'/' }}" title="{{ $item->title }}">{{ $item->title }}</a></li>
+                                            @endforeach
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown"><i class="fas fa-list"></i>{{ _(' Thể loại ') }}<i class="fas fa-caret-down"></i></a>
+                                        <div class="dropdown-menu multi-column" role="menu">
+                                            @php $typeComics = getListTypeComic();@endphp
+                                            <div class="row">
+                                                <div class="item col-md-4">
+                                                    <ul class="list-unstyled wrap">
+                                                        @php $count = 0; @endphp
+                                                        @foreach ($typeComics as $type) 
+                                                            @php $count++; @endphp
+                                                            @if ($count <= 13)
+                                                                <li><a href="{{ route('typeChap',['slug'=>$type->slug]).'/' }}" title="{{ $type->title }}">{{ $type->title }}</a></li>
+                                                            @endif
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                                <div class="item col-md-4">
+                                                    <ul class="list-unstyled wrap">
+                                                    @php $count = 0; @endphp
+                                                    @foreach ($typeComics as $type) 
+                                                        @php $count++; @endphp
+                                                        @if ($count > 13 && $count <=26)
+                                                            <li><a href="{{ route('typeChap',['slug'=>$type->slug]).'/' }}" title="{{ $type->title }}">{{ $type->title }}</a></li>
+                                                        @endif
+                                                    @endforeach
+                                                    </ul>
+                                                </div>
+                                                <div class="item col-md-4">
+                                                    <ul class="list-unstyled wrap">
+                                                    @php $count = 0; @endphp
+                                                    @foreach ($typeComics as $type) 
+                                                        @php $count++; @endphp
+                                                        @if ($count > 26 && $count <=38)
+                                                            <li><a href="{{ route('typeChap',['slug'=>$type->slug]).'/' }}" title="{{ $type->title }}">{{ $type->title }}</a></li>
+                                                        @endif
+                                                    @endforeach
+                                                </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    @if(Route::currentRouteName() === 'detailChap')
+                                        @php
+                                            $headSet = getSettingChap();
+                                            if(count($headSet) > 0) {
+                                                foreach ($headSet as $key => $value) {
+                                                    if ($key == 'foz') $foz = $value;
+                                                    if ($key == 'lih') $lih = $value;
+                                                    if ($key == 'bgc') $bgc = $value;
+                                                    if ($key == 'frm_fluid') $frm_fluid = $value;
+                                                    if ($key == 'frm_break') $frm_break = $value;
+                                                }
+                                            }                                    
+                                        @endphp
+                                        <li id="chap-setting" class="dropdown">
+                                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cog"></i>{{ _(' Tuỳ chỉnh ') }}<i class="fas fa-caret-down"></i></a>
+                                            <form action="#" id="form-setting" class="dropdown-menu" data-action="{{ route('saveSettingChap') }}">
+                                                <div class="form-group row">
+                                                    <div class="col-md-5 frm-label"><label>{{ _('Màu nền') }}</label></div>
+                                                    <div class="col-md-7">
+                                                        <select name="frm_bg" class="form-control" data-style="background-color" data-ck="bgc">
+                                                            <option value="#F4F4F4__#4e4e4e" {{ (!isset($bgc) || (isset($bgc) && $bgc == '#F4F4F4__#4e4e4e')) ? 'selected' : '' }}>Xám nhạt</option>
+                                                            <option value="#E9EBEE__#4e4e4e" {{ (isset($bgc) && $bgc == '#E9EBEE__#4e4e4e') ? 'selected' : '' }}>Xanh nhạt</option>
+                                                            <option value="#F4F4E4__#4e4e4e" {{ (isset($bgc) && $bgc == '#F4F4E4__#4e4e4e') ? 'selected' : '' }}>Vàng nhạt</option>
+                                                            <option value="#EAE4D3__#4e4e4e" {{ (isset($bgc) && $bgc == '#EAE4D3__#4e4e4e') ? 'selected' : '' }}>Màu sepia</option>
+                                                            <option value="#D5D8DC__#4e4e4e" {{ (isset($bgc) && $bgc == '#D5D8DC__#4e4e4e') ? 'selected' : '' }}>Xanh đậm</option>
+                                                            <option value="#FAFAC8__#4e4e4e" {{ (isset($bgc) && $bgc == '#FAFAC8__#4e4e4e') ? 'selected' : '' }}>Vàng đậm</option>
+                                                            <option value="#EFEFAB__#4e4e4e" {{ (isset($bgc) && $bgc == '#EFEFAB__#4e4e4e') ? 'selected' : '' }}>Vàng ố</option>
+                                                            <option value="#FFF__#4e4e4e" {{ (isset($bgc) && $bgc == '#FFF__#4e4e4e') ? 'selected' : '' }}>Màu trắng</option>
+                                                            <option value="#232323__#e2e2e2" {{ (isset($bgc) && $bgc == '#232323__#e2e2e2') ? 'selected' : '' }}>Màu tối</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-md-5 frm-label"><label>{{ _('Font chữ') }}</label></div>
+                                                    <div class="col-md-7">
+                                                        <select name="frm_font" class="form-control" data-style="font-family" data-ck="font">
+                                                            <option value="Arial" {{ (isset($font) && $font == 'Arial') ? 'selected' : '' }}>Arial</option>
+                                                            <option value="Bookerly" {{ (isset($font) && $font == 'Bookerly') ? 'selected' : '' }}>Bookerly</option>
+                                                            <option value="DancingScript" {{ (isset($font) && $font == 'DancingScript') ? 'selected' : '' }}>DancingScript</option>
+                                                            <option value="Nunito" {{ (isset($font) && $font == 'Nunito') ? 'selected' : '' }}>Nunito</option>
+                                                            <option value="Minion" {{ (isset($font) && $font == 'Minion') ? 'selected' : '' }}>Minion</option>
+                                                            <option value="Merriweather" {{ (isset($font) && $font == 'Merriweather') ? 'selected' : '' }}>Merriweather</option>
+                                                            <option value="Playfair" {{ (isset($font) && $font == 'Playfair') ? 'selected' : '' }}>Playfair</option>
+                                                            <option value="Pacifico" {{ (isset($font) && $font == 'Pacifico') ? 'selected' : '' }}>Pacifico</option>
+                                                            <option value="Roboto" {{ (!isset($font) || (isset($font) && $font == 'Roboto')) ? 'selected' : '' }}>Roboto</option>
+                                                            <option value="Segoe UI" {{ (isset($font) && $font == 'Segoe UI') ? 'selected' : '' }}>Segoe UI</option>
+                                                            <option value="Verdana" {{ (isset($font) && $font == 'Verdana') ? 'selected' : '' }}>Verdana</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-md-5 frm-label"><label>{{ _('Size chữ') }}</label></div>
+                                                    <div class="col-md-7">
+                                                        <select class="form-control" name="frm_size" data-style="font-size"  data-ck="foz">
+                                                            <option value="16px" {{ (isset($foz) && $foz == '16px') ? 'selected' : '' }}>16</option>
+                                                            <option value="18px" {{ (isset($foz) && $foz == '18px') ? 'selected' : '' }}>18</option>
+                                                            <option value="20px" {{ (isset($foz) && $foz == '20px') ? 'selected' : '' }}>20</option>
+                                                            <option value="22px" {{ (!isset($foz) || (isset($foz) && $foz == '22px')) ? 'selected' : '' }}>22</option>
+                                                            <option value="24px" {{ (isset($foz) && $foz == '24px') ? 'selected' : '' }}>24</option>
+                                                            <option value="26px" {{ (isset($foz) && $foz == '26px') ? 'selected' : '' }}>26</option>
+                                                            <option value="28px" {{ (isset($foz) && $foz == '28px') ? 'selected' : '' }}>28</option>
+                                                            <option value="30px" {{ (isset($foz) && $foz == '30px') ? 'selected' : '' }}>30</option>                                                        
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-md-5 frm-label"><label>{{ _('Chiều cao dòng') }}</label></div>
+                                                    <div class="col-md-7">
+                                                        <select class="form-control" name="frm_lineh" data-style="line-height" data-ck="lih">
+                                                            <option value="100%" {{ (isset($lih) && $lih == '100%') ? 'selected' : '' }}>100%</option>
+                                                            <option value="120%" {{ (isset($lih) && $lih == '120%') ? 'selected' : '' }}>120%</option>
+                                                            <option value="140%" {{ (!isset($lih) || (isset($lih) && $lih == '140%')) ? 'selected' : '' }}>140%</option>
+                                                            <option value="160%" {{ (isset($lih) && $lih == '160%') ? 'selected' : '' }}>160%</option>
+                                                            <option value="180%" {{ (isset($lih) && $lih == '180%') ? 'selected' : '' }}>180%</option>
+                                                            <option value="200%" {{ (isset($lih) && $lih == '200%') ? 'selected' : '' }}>200%</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-md-5 frm-label"><label>{{ _('Full khung') }}</label></div>
+                                                    <div class="col-md-7">
+                                                        <label for="fluid-yes">
+                                                            <input type="radio" name="frm_fluid" id="fluid-yes" value="yes" {{ (isset($frm_fluid) && $frm_fluid == 'yes') ? 'checked' : '' }}> {{ _('Có') }}
+                                                        </label>
+                                                        <label for="fluid-no">
+                                                            <input type="radio" name="frm_fluid" id="fluid-no" value="no" {{ (!isset($frm_fluid) || (isset($frm_fluid) && $frm_fluid == 'no')) ? 'checked' : '' }}> {{ _('Không') }}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                 <div class="form-group row">
+                                                    <div class="col-md-5 frm-label"><label>{{ _('Không cách đoạn') }}</label></div>
+                                                    <div class="col-md-7">
+                                                        <label for="break-yes">
+                                                            <input type="radio" name="frm_break" id="break-yes" value="yes" {{ (isset($frm_break) && $frm_break == 'yes') ? 'checked' : '' }}> {{ _('Có') }}
+                                                        </label>
+                                                        <label for="break-no">
+                                                            <input type="radio" name="frm_break" id="break-no" value="no" {{ (!isset($frm_break) || (isset($frm_break) && $frm_break == 'no')) ? 'checked' : '' }}> {{ _('Không') }}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </li>
+                                    @else
+                                        <li id="chap-setting" class="dropdown">
+                                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cog"></i>{{ _(' Tuỳ chỉnh ') }}<i class="fas fa-caret-down"></i></a>
+                                            <form action="#" id="form-setting-home" class="dropdown-menu" >
+                                                <div class="form-group row">
+                                                    <div class="col-md-5 frm-label"><label>{{ _('Màu nền') }}</label></div>
+                                                    <div class="col-md-7">
+                                                        <select name="frm_bg" class="form-control">
+                                                            <option value="light-theme">Xám nhạt</option>
+                                                            <option value="dark-theme" <?php if(isset($_COOKIE['themeStyle']) && $_COOKIE['themeStyle'] == "dark-theme") echo 'selected'; ?>>Màu tối</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </div>
+                            <div class="header-rf clearfix flex item-center content-end">
+                                <div class="search-box">
+                                    {!!csrf_field()!!}
+                                    <form id="form-seach" action="{{ route('searchComic') }}" method="GET" class="dev-form">
+                                        <div id="frm-search" class="input-group">
+                                            <input type="text" name="keyword" class="form-control" placeholder="Tìm kiếm..." required>
+                                            <div class="input-group-btn">
+                                                <button type="button" class="btn btn-search"><i class="far fa-search"></i></button>
+                                            </div>
+                                        </div>
+                                        <div id="search-res" data-href="{{ route('searchAjaxComic') }}">
+                                            <div class="search-load"><img src="{{ asset('public/images/loading_red.gif') }}" alt="loading..."></div>
+                                            <div class="results"></div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>  
+                        </div>
+                    @elsedesktop
+                        <div class="container">
+                            <div class="nav-bar clearfix">
+                               <figure id="logo"><a href="{{ route('home') }}">{!! getLogo() !!}</a></figure>
+                                <button type="button" class="btn-cs" data-toggle="collapse" data-target="#menu-mobile"><i class="fas fa-bars"></i></button> 
+                            </div>
+                            <div class="collapse" id="menu-mobile">
+                                <ul class="menu-left" id="main-menu">
+                                    <li>
+                                        <a href="javascript:void(0);"><i class="fas fa-list"></i>{{ _(' Danh sách ') }}<i class="fas fa-caret-down"></i></a>
+                                        <ul class="sub-menu" role="menu">
+                                            @php 
+                                                $catComics = getListCatComic(); 
+                                                $catArticle = getListCatArticle();
+                                            @endphp
+                                            @foreach ($catComics as $cat)
+                                                <li><a href="{{ route('catChap',['slug'=>$cat->slug]).'/' }}" title="{{ $cat->title }}">{{ $cat->title }}</a></li>
+                                            @endforeach
+                                            @foreach ($catArticle as $item)
+                                                <li><a href="{{ route('cateArticle',['slug'=>$item->slug]).'/' }}" title="{{ $item->title }}">{{ $item->title }}</a></li>
+                                            @endforeach
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0);"><i class="fas fa-list"></i>{{ _(' Thể loại ') }}<i class="fas fa-caret-down"></i></a>
+                                        @php $typeComics = getListTypeComic();@endphp
+                                        <ul class="sub-menu menu-type" role="menu">
+                                            @php $count = 0; @endphp
+                                            @foreach ($typeComics as $type) 
+                                                <li><a href="{{ route('typeChap',['slug'=>$type->slug]).'/' }}" title="{{ $type->title }}">{{ $type->title }}</a></li>
+                                            @endforeach
+                                        </ul>
+                                    </li>
+                                    @if(Route::currentRouteName() === 'detailChap')
+                                        @php
+                                            $headSet = getSettingChap();
+                                            if(count($headSet) > 0) {
+                                                foreach ($headSet as $key => $value) {
+                                                    if ($key == 'foz') $foz = $value;
+                                                    if ($key == 'lih') $lih = $value;
+                                                    if ($key == 'bgc') $bgc = $value;
+                                                    if ($key == 'frm_fluid') $frm_fluid = $value;
+                                                    if ($key == 'frm_break') $frm_break = $value;
+                                                }
+                                            }                                    
+                                        @endphp
+                                        <li id="chap-setting">
+                                            <a href="javascript:void(0);"><i class="fa fa-cog"></i></span>{{ _(' Tuỳ chỉnh ') }}<i class="fas fa-caret-down"></i></a>
+                                            <form action="#" id="form-setting" class="sub-menu" data-action="{{ route('saveSettingChap') }}">
+                                                <div class="form-group row">
+                                                    <div class="col-md-5 frm-label"><label>{{ _('Màu nền') }}</label></div>
+                                                    <div class="col-md-7 frm-value">
+                                                        <select name="frm_bg" class="form-control" data-style="background-color" data-ck="bgc">
+                                                            <option value="#F4F4F4__#4e4e4e" {{ (!isset($bgc) || (isset($bgc) && $bgc == '#F4F4F4__#4e4e4e')) ? 'selected' : '' }}>Xám nhạt</option>
+                                                            <option value="#E9EBEE__#4e4e4e" {{ (isset($bgc) && $bgc == '#E9EBEE__#4e4e4e') ? 'selected' : '' }}>Xanh nhạt</option>
+                                                            <option value="#F4F4E4__#4e4e4e" {{ (isset($bgc) && $bgc == '#F4F4E4__#4e4e4e') ? 'selected' : '' }}>Vàng nhạt</option>
+                                                            <option value="#EAE4D3__#4e4e4e" {{ (isset($bgc) && $bgc == '#EAE4D3__#4e4e4e') ? 'selected' : '' }}>Màu sepia</option>
+                                                            <option value="#D5D8DC__#4e4e4e" {{ (isset($bgc) && $bgc == '#D5D8DC__#4e4e4e') ? 'selected' : '' }}>Xanh đậm</option>
+                                                            <option value="#FAFAC8__#4e4e4e" {{ (isset($bgc) && $bgc == '#FAFAC8__#4e4e4e') ? 'selected' : '' }}>Vàng đậm</option>
+                                                            <option value="#EFEFAB__#4e4e4e" {{ (isset($bgc) && $bgc == '#EFEFAB__#4e4e4e') ? 'selected' : '' }}>Vàng ố</option>
+                                                            <option value="#FFF__#4e4e4e" {{ (isset($bgc) && $bgc == '#FFF__#4e4e4e') ? 'selected' : '' }}>Màu trắng</option>
+                                                            <option value="#232323__#e2e2e2" {{ (isset($bgc) && $bgc == '#232323__#e2e2e2') ? 'selected' : '' }}>Màu tối</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-md-5 frm-label"><label>{{ _('Size chữ') }}</label></div>
+                                                    <div class="col-md-7 frm-value">
+                                                        <select class="form-control" name="frm_size" data-style="font-size"  data-ck="foz">
+                                                            <option value="16px" {{ (isset($foz) && $foz == '16px') ? 'selected' : '' }}>16</option>
+                                                            <option value="18px" {{ (isset($foz) && $foz == '18px') ? 'selected' : '' }}>18</option>
+                                                            <option value="20px" {{ (isset($foz) && $foz == '20px') ? 'selected' : '' }}>20</option>
+                                                            <option value="22px" {{ (!isset($foz) || (isset($foz) && $foz == '22px')) ? 'selected' : '' }}>22</option>
+                                                            <option value="24px" {{ (isset($foz) && $foz == '24px') ? 'selected' : '' }}>24</option>
+                                                            <option value="26px" {{ (isset($foz) && $foz == '26px') ? 'selected' : '' }}>26</option>
+                                                            <option value="28px" {{ (isset($foz) && $foz == '28px') ? 'selected' : '' }}>28</option>
+                                                            <option value="30px" {{ (isset($foz) && $foz == '30px') ? 'selected' : '' }}>30</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-md-5 frm-label"><label>{{ _('Chiều cao dòng') }}</label></div>
+                                                    <div class="col-md-7 frm-value">
+                                                        <select class="form-control" name="frm_lineh" data-style="line-height" data-ck="lih">
+                                                            <option value="100%" {{ (isset($lih) && $lih == '100%') ? 'selected' : '' }}>100%</option>
+                                                            <option value="120%" {{ (isset($lih) && $lih == '120%') ? 'selected' : '' }}>120%</option>
+                                                            <option value="140%" {{ (!isset($lih) || (isset($lih) && $lih == '140%')) ? 'selected' : '' }}>140%</option>
+                                                            <option value="160%" {{ (isset($lih) && $lih == '160%') ? 'selected' : '' }}>160%</option>
+                                                            <option value="180%" {{ (isset($lih) && $lih == '180%') ? 'selected' : '' }}>180%</option>
+                                                            <option value="200%" {{ (isset($lih) && $lih == '200%') ? 'selected' : '' }}>200%</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-md-5 frm-label"><label>{{ _('Full khung') }}</label></div>
+                                                    <div class="col-md-7 frm-value">
+                                                        <label for="fluid-yes">
+                                                            <input type="radio" name="frm_fluid" id="fluid-yes" value="yes" {{ (isset($frm_fluid) && $frm_fluid == 'yes') ? 'checked' : '' }}> {{ _('Có') }}
+                                                        </label>
+                                                        <label for="fluid-no">
+                                                            <input type="radio" name="frm_fluid" id="fluid-no" value="no" {{ (!isset($frm_fluid) || (isset($frm_fluid) && $frm_fluid == 'no')) ? 'checked' : '' }}> {{ _('Không') }}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                 <div class="form-group row">
+                                                    <div class="col-md-5 frm-label"><label>{{ _('Không cách đoạn') }}</label></div>
+                                                    <div class="col-md-7 frm-value">
+                                                        <label for="break-yes">
+                                                            <input type="radio" name="frm_break" id="break-yes" value="yes" {{ (isset($frm_break) && $frm_break == 'yes') ? 'checked' : '' }}> {{ _('Có') }}
+                                                        </label>
+                                                        <label for="break-no">
+                                                            <input type="radio" name="frm_break" id="break-no" value="no" {{ (!isset($frm_break) || (isset($frm_break) && $frm_break == 'no')) ? 'checked' : '' }}> {{ _('Không') }}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </li>
+                                    @else
+                                        <li id="chap-setting" class="dropdown">
+                                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cog"></i>{{ _(' Tuỳ chỉnh ') }}<i class="fas fa-caret-down"></i></a>
+                                            <form action="#" id="form-setting-home" class="dropdown-menu" >
+                                                <div class="form-group row">
+                                                    <div class="col-md-5 frm-label"><label>{{ _('Màu nền') }}</label></div>
+                                                    <div class="col-md-7">
+                                                        <select name="frm_bg" class="form-control">
+                                                            <option value="light-theme">Xám nhạt</option>
+                                                            <option value="dark-theme" <?php if(isset($_COOKIE['themeStyle']) && $_COOKIE['themeStyle'] == "dark-theme") echo 'selected'; ?>>Màu tối</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </li>
+                                    @endif
+                                </ul>
+                                <div class="search-box">
+                                    {!!csrf_field()!!}
+                                    <form id="form-seach" action="{{ route('searchComic') }}" method="GET" class="dev-form">
+                                        <div id="frm-search" class="input-group">
+                                            <input type="text" name="keyword" class="form-control" placeholder="Tìm kiếm..." required>
+                                            <div class="input-group-btn">
+                                                <button type="button" class="btn btn-search"><i class="far fa-search"></i></button>
+                                            </div>
+                                        </div>
+                                        <div id="search-res" data-href="{{ route('searchAjaxComic') }}">
+                                            <div class="search-load"><img src="{{ asset('public/images/loading_red.gif') }}" alt="loading..."></div>
+                                            <div class="results"></div>
+                                        </div>
+                                    </form>
+                                </div> 
+                            </div>                         
+                        </div>                    
+                    @enddesktop
+                </div>
+            </header>
+            <main>
+                @yield('content')
+            </main>
+            <footer>
+                <div class="container">
+                    <div class="row">
+                        <div class="ft-left hidden-xs col-sm-5">{!! copyright() !!}</div>
+                        <div class="ft-right col-xs-12 col-sm-7 list-unstyled cleafix">
+                            <li class="group-action text-right pull-right"><a href="{{ route('contact').'/' }}" title={{ _('Contact') }}>{{ _('Contact') }}</a> - <a href="{{ route('page',['slug'=>'terms-of-use']).'/' }}" title={{ _('Terms of Service') }}>{{ _('ToS') }}</a><a href="javascript:void(0)" id="backtotop" title="{{ _('Trở lên đầu trang') }}"><i class="far fa-arrow-circle-up"></i></a></li>
+                            <li class="hidden-xs list-tag">
+                                @php $tags = getListTypeComic() @endphp
+                                @if(count($tags) > 0)
+                                    <p>
+                                        @foreach($tags as $key=>$tag)
+                                            <a href="{{ route('typeChap',['slug'=>$tag->slug]).'/' }}" title ={{ $tag->title }}>{{ $tag->title.'' }}</a>
+                                        @endforeach
+                                    </p>
+                                @endif
+                            </li>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <div id="overlay"></div>
+            <div class="loading"><img src="{{ asset('public/images/loading_red.gif') }}" alt="loading..."></div>
+        </div>
+        <script type="text/javascript" src="{{ asset('public/js/jquery.min.js') }}"></script>
+        <script type="text/javascript">(function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = 'https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v3.0&appId=1849189082054776&autoLogAppEvents=1';
+            fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+        </script>
+        <!--flatpickr-->
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script type="text/javascript" src="{{ asset('public/js/flatpickr.js') }}"></script>
+        <!--flatpickr-->
+        <!-- Latest compiled and minified CSS -->
+        <script type="text/javascript" src="{{ asset('public/js/timeago.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('public/js/pnotify.custom.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('public/js/popper.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('public/js/bootstrap.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('public/js/jquery-ui.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('public/js/jquery.jscroll.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('public/js/owl.carousel.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('public/js/jquery.scrollbar.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('public/js/select2.full.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('public/js/jquery.raty.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('public/js/main.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('public/js/sliders.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('public/js/profile.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('public/js/dsmart.js') }}"></script>
+        @yield('script')
+        @handheld<script type="text/javascript" src="{{ asset('public/js/responsive.js') }}"></script>@endhandheld
+    </body>
+</html>

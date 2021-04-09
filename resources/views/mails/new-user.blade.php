@@ -1,0 +1,1 @@
+You has been created account with password: {{ $password }}

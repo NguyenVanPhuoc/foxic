@@ -1,0 +1,178 @@
+@extends('templates.master')
+@section('title', $page->title)
+	@if($seo)
+		@section('description', $seo->value)
+		@section('keywords', $seo->key)
+	@endif
+@section('content')
+	<div id="home" class="pages">
+		@if($slide)
+		@php 
+	        $list_content = json_decode($slide->content);
+	     @endphp
+		<section class="slide-top">
+			<div class="slide-banner owl-carousel">
+				@foreach($list_content as $item)
+				<div class="item" style="background-image: url('{!!getImgUrl($item->image)!!}');">
+					<a href="{!!$item->link!!}" class="link-to"></a>
+				</div>
+				@endforeach
+			</div>
+		</section>
+		@endif
+		@php 
+			$catHot = getCatComic($catHotId); 
+			$catFull = getCatComic($catFullId);
+		@endphp
+		
+		<section id="hot">
+			<div class="container">
+				<div class="sec-title clearfix">
+					<h2><a href="{{ route('catChap',['slug'=>$catHot->slug]).'/' }}">{{ $catHot->title }}</a></h2>
+					<a href="{{ route('catChap',['slug'=>$catHot->slug]).'/' }}" ><span class="glyphicon glyphicon-fire"></span></a>
+					<select name="type_hot" id="hot-select" class="form-control new-select select2" data-link="{{ route('loadTypeHot') }}" data-token="{{ csrf_token() }}">
+						<option value="tat-ca">{{ _('Tất cả') }}</option>
+						@php $typeComics = getListTypeComic();@endphp
+						@foreach ($typeComics as $type) 
+							<option value="{{ $type->slug }}">{{ $type->title }}</option>
+						@endforeach
+					</select>
+				</div>
+				<div class="sec-content">
+					<div class="list-hot clearfix">
+						@if ($comicCatHot != '' && $comicCatHot->isNotEmpty())
+							@php $count = 0;@endphp
+							@foreach ($comicCatHot as $comic) 
+								@php $count++; @endphp
+								@if ($count == 1)
+									<div class="item top-{{ $count }}">
+										<a href="{{ route('listChap',$comic->slug).'/' }}">
+											@if (checkComicFull($comic->id))
+												<span class="full-label"></span>
+											@endif
+											{!! image($comic->image,265,396 ,$comic->title) !!}
+											<div class="title">
+												<h3>{{ $comic->title }}</h3>
+											</div>
+										</a>
+									</div>
+								@else
+									<div class="item top-{{ $count }}">
+										<a href="{{ route('listChap',$comic->slug).'/' }}">
+											@if (checkComicFull($comic->id))
+												<span class="full-label"></span>
+											@endif
+											{!! image($comic->image,129,192,$comic->title) !!}
+											<div class="title">
+												<h3>{{ $comic->title }}</h3>
+											</div>
+										</a>
+									</div>
+								@endif
+							@endforeach
+						@endif
+					</div>
+				</div>
+			</div>
+		</section>
+		<section id="new">
+			<div class="container">
+				<div class="row">
+					<div id="sidebar" class="col-md-4">
+						@include('sidebars.index')
+					</div>
+					<div id="content" class="col-md-8">
+						<div class="sec-title clearfix">
+							{{-- <h2><a href="{{ route('catChap',['slug'=>$catNew->slug]) }}">{{ _('Truyện mới cập nhật') }}</a></h2> --}}
+							<h2>{{ _('Truyện mới cập nhật') }}</h2>
+							{{-- <a href="{{ route('catChap',['slug'=>$catNew->slug]) }}""><span class="glyphicon glyphicon-menu-right"></span></a> --}}
+							<select name="type_hot" id="hot-select" class="form-control new-select select2" data-link="{{ route('loadTypeNew') }}" data-token="{{ csrf_token() }}">
+								<option value="tat-ca">{{ _('Tất cả') }}</option>
+								@php $typeComics = getListTypeComic();@endphp
+								@foreach ($typeComics as $type) 
+									<option value="{{ $type->slug }}">{{ $type->title }}</option>
+								@endforeach
+							</select>
+						</div>
+						<div class="sec-content">
+							<div class="list-new list">
+								@if ($comicCatNew != '' && $comicCatNew->isNotEmpty())
+									@foreach ($comicCatNew as $comic)
+										<div class="item row">
+											<div class="comic-title col-md-5">
+												<span class="glyphicon glyphicon-chevron-right"></span>
+												<h4><a href="{{ route('listChap',$comic->slug).'/' }}">{{ $comic->title }}</a></h4>
+												@if (checkComicHot($comic->id)) <span class="label-title label-hot"></span> @endif
+												@if (checkComicNew($comic->id)) <span class="label-title label-new"></span> @endif
+												@if (checkComicFull($comic->id)) <span class="label-title label-full"></span> @endif
+												{{-- @if ($comic->end == 1) <span class="label-title label-full"></span> @endif --}}
+											</div>
+											<div class="comic-type col-md-3">
+												{!! getObjSlugTitleTypeInComic($comic->id) !!}
+											</div>
+											@php $chap = getLatestChapByComicId($comic->id); @endphp
+											<div class="comic-chap col-md-2">@if($chap)<a href="{{ route('detailChap',['slugComic'=>$comic->slug,'slugChap'=>$chap->slug]).'/' }}" title="{{ $comic->title.' - '.$chap->title }}">{{ $chap->chap }}</a>@else {{ _('Chưa có') }} @endif</div>
+											<div class="comic-created col-md-2">{{ timeElapsedString($comic->chap_up) }}</div>
+										</div>
+									@endforeach
+								@endif
+							</div>
+						</div>
+					</div>					
+				</div>
+			</div>
+		</section>
+		<section id="full">
+			<div class="container">
+				<div class="sec-title clearfix">
+					@if($catFull != '')
+						<h2><a href="{{ route('catChap',['slug'=>$catFull->slug]).'/' }}">{{ _('Truyện đã hoàn thành') }}</a></h2>
+						<a href="{{ route('catChap',['slug'=>$catFull->slug]).'/' }}"><span class="glyphicon glyphicon-menu-right"></span></a>
+					@endif	
+				</div>
+				<div class="sec-content">
+					<div class="list-full list row">						
+						@if ($comicCatFull != '' && $comicCatFull->isNotEmpty())
+							@foreach ($comicCatFull as $comic)
+								{{-- @if ($comic->end == 1) --}}
+									<div class="item col-md-2">
+										<a href="{{ route('listChap',$comic->slug).'/' }}" title="{{ $comic->title }}">
+											{!! image($comic->image,164,245 ,$comic->title) !!}
+											<div class="caption">
+												<h3>{{ $comic->title }}</h3>
+												<small class="btn-xs label-primary">{{ _('Full - ').countTotalChap($comic->id)._(' chương') }}</small>
+											</div>
+										</a>
+									</div>
+								{{-- @endif --}}
+							@endforeach
+						@endif
+					</div>
+				</div>
+			</div>
+		</section>
+		<section id="review">
+			<div class="container">
+				<div class="sec-title clearfix">
+					<h2>{{ _('Tin tức - Review truyện') }}<span class="glyphicon glyphicon-menu-right"></span></h2>
+				</div>
+				<div class="sec-content">
+					<div class="list-full list row">						
+						@if ($new_review != '' && $new_review->isNotEmpty())
+							@foreach ($new_review as $item)
+								<div class="item col-md-2">
+									<a href="{{ route('detailArticle',$item->slug).'/' }}" title="{{ $item->title }}">
+										{!! image($item->image,164,245 ,$item->title) !!}
+										<div class="caption">
+											<h3>{{ $item->title }}</h3>
+										</div>
+									</a>
+								</div>
+							@endforeach
+						@endif
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+@endsection

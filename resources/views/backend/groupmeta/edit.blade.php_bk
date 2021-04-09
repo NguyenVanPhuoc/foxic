@@ -1,0 +1,224 @@
+@extends('backend.layout.index')
+@section('title','Sửa nhóm')
+@section('content')
+<div id="edit-mediaField" class="container page media-fields">
+	<div class="head"><h1 class="title">Nhóm {{ $groupMeta->title }}</h1></div>
+	@if(count($errors)>0)
+	<div class="alert alert-danger">
+		<ul>
+			@foreach($errors->all() as $error)
+			<li>{{$error}}</li>	
+			@endforeach
+		</ul>
+	</div>
+	@endif
+	@if(session('success'))
+	<div class="alert alert-success">{{session('success')}}</div>
+	@endif
+	<div class="notify"></div>
+	<form id="{{ $groupMeta->id }}" action="{{ url()->current() }}" method="post" name="groupMeta" class="dev-form groupMeta edit-post">
+		<input type="hidden" name="_token" value="{{csrf_token()}}"/>
+		<div id="groupMeta-fields" class="row">
+			<div class="form-group col-md-8" id="title">
+				<label for="title">Tên nhóm<small>(*)</small></label>
+				<input type="text" name="title" class="form-control title" value="{{ $groupMeta->title }}" />			
+			</div>
+			@if($pages!=null)
+			<div class="form-group col-md-4" id="object">
+				<label for="object">Áp dụng<small>(*)</small></label>		
+				<select class="form-control" name="object">
+					@foreach($pages as $page)
+					<option value="{{$page->id}}"@if($groupMeta->post_id == $page->id) {{" selected"}} @endif>{{$page->title}}</option>
+					@endforeach
+				</select>		
+			</div>
+			@endif
+		</div>
+		<div id="fields" class="meta">
+			@foreach($metas as $meta)
+			<div id="meta-{{ $meta->id }}" class="item row edit">
+				<div class="form-group col-md-6">
+					<label for="">Tên trường<small>(*)</small></label>
+					<input type="text" name="{{$meta->slug}}" class="form-control meta-name" value="{{$meta->title}}" />
+				</div>
+				<div class="form-group col-md-3">
+					<label for="type">Loại<small>(*)</small></label>
+					<select class="form-control type" name="type">
+						<option value="text" @if($meta->type == 'text') {{" selected"}} @endif>Text</option>
+						<option value="textarea" @if($meta->type == 'textarea') {{" selected"}} @endif>Textarea</option>
+						<option value="editor" @if($meta->type == 'editor') {{" selected"}} @endif>Editor</option>
+					</select>
+				</div>
+				<div class="form-group col-md-2">
+					<label for="column">Độ rộng<small>(*)</small></label>
+					<select class="form-control column" name="column">
+						<option value="2"@if($meta->width == 2) {{" selected"}} @endif>20%</option>
+						<option value="3"@if($meta->width == 3) {{" selected"}} @endif>25%</option>
+						<option value="4"@if($meta->width == 4) {{" selected"}} @endif>33%</option>
+						<option value="6"@if($meta->width == 6) {{" selected"}} @endif>50%</option>
+						<option value="12"@if($meta->width == 12) {{" selected"}} @endif>100%</option>
+					</select>
+				</div>
+				<div class="form-group col-md-1">
+					<a href="{{URL::to('/admin/group-meta/xoa-meta/')}}/{{$meta->id}} " id="{{ $meta->id }}" class="btn">Xóa</a>
+				</div>
+			</div>
+			@endforeach
+
+		</div>
+		<a href="#" class="add-field">Thêm trường</a>
+		<div class="group-action">
+			<button type="submit" class="btn">Sửa</button>
+			<a href="{{route('metas')}}" class="btn btn-cancel">Trở lại</a>
+		</div>
+	</form>
+</div>
+<script>
+	$(document).ready(function(){
+		$(".add-field").click(function(){
+			var html = '<div class="item row add">';
+			html = html + '<div class="form-group col-md-6">';
+			html = html + '<label for="meta_name">Tên trường<small>(*)</small></label>';
+			html = html + '<input type="text" name="meta_name" class="form-control meta-name"/>';
+			html = html + '</div>';
+			html = html + '<div class="form-group col-md-3">';
+			html = html + '<label for="type">Loại<small>(*)</small></label>';
+			html = html + '<select class="form-control type" name="type">';
+			html = html + '<option value="text">Text</option>';
+			html = html + '<option value="textarea">Textarea</option>';
+			html = html + '<option value="editor">Editor</option>';
+			html = html + '</select>';
+			html = html + '</div>';
+			html = html + '<div class="form-group col-md-2">';
+			html = html + '<label for="column">Độ rộng<small>(*)</small></label>';
+			html = html + '<select class="form-control column" name="column">';
+			html = html + '<option value="2">20%</option>';
+			html = html + '<option value="3">25%</option>';
+			html = html + '<option value="4">33%</option>';
+			html = html + '<option value="6">50%</option>';
+			html = html + '<option value="12">100%</option>';
+			html = html + '</select>';
+			html = html + '</div>';
+			html = html + '<div class="form-group col-md-1">';
+			html = html + '<a href="#" class="btn">Xóa</a>';
+			html = html + '</div';
+			html = html + '</div';
+			$("#fields").append(html);
+			return false;
+		});
+
+		//remve item
+		$( document ).on( "click", "#fields .add a.btn", function() {
+			$(this).parents(".item").remove();
+			return false;
+		});
+
+		//edit group meta
+		$(".edit-post .btn-group .btn-primary").click(function(){	
+			$(".notify").html();
+			var _token = $(".edit-post input[name='_token']").val();
+			var title = $(".edit-post #title .title").val();
+			var object = $(".edit-post #object select").val();
+			var groupmeta_id = parseInt($(".edit-post").attr("id"));
+			var link = $(".edit-post").attr("action");
+			var editMetas = new Array();
+			var addMetas = new Array();
+			var count = 0;
+			$("#fields .edit").each(function(){
+				editMetas[count] = {
+					'id' : $(this).find(".delete").attr("id"),
+					'title' : $(this).find(".meta-name").val(),
+					'type' : $(this).find(".type").val(),
+					'width' : $(this).find(".column").val()
+				}
+				count = count + 1;
+			});
+			var count = 0;
+			$("#fields .add").each(function(){
+				addMetas[count] = {
+					'title' : $(this).find(".meta-name").val(),
+					'type' : $(this).find(".type").val(),
+					'width' : $(this).find(".column").val()
+				}
+				count = count + 1;
+			});
+			// alert(_token);
+			$.ajax({
+				type:'POST',            
+				url:link,
+				cache: false,
+				data:{
+					'_token': _token,
+					'title': title,
+					'groupmeta_id': groupmeta_id,
+					'object': object,
+					'editMetas': JSON.stringify(editMetas),
+					'addMetas': JSON.stringify(addMetas)
+				},
+				success:function(data){
+					if(data!="error"){
+						var newurl = "{{URL::to('/admin/group-meta/sua/')}}"+ '/'+data;
+						window.history.pushState({path:newurl},'',newurl);
+						$(".notify").html('<div class="alert alert-success">Cập nhật thành công</div>');
+					}
+				}
+			})
+			return false;
+		});
+
+		//delete meta
+		$( document ).on( "click", "#fields .edit .delete", function() {
+			var title = $(this).parents(".edit").find(".meta-name").val();
+			var link = $(this).attr("href");
+			var id = $(this).attr("id");
+			$('.delete-modal-meta .modal-footer .btn-primary').attr("href",link);
+			$('.delete-modal-meta .modal-footer .btn-primary').attr("id",id);
+			$('.delete-modal-meta .modal-body p').html("Bạn chắc là muốn xóa <strong>"+title+" ?</strong>");		
+			$('.delete-modal-meta').modal('toggle');
+			return false;
+		});
+
+		$( document ).on( "click", ".delete-modal-meta .btn-primary", function() {
+			var _token = $(".edit-post input[name='_token']").val();
+			var id = parseInt($(this).attr("id"));
+			$.ajax({
+				type:'POST',            
+				url: $(this).attr("href"),
+				cache: false,
+				data:{
+					'_token': _token,
+					'id': id
+				},
+				success:function(data){
+					if(data=="success"){
+						$("#fields #meta-"+id).remove();
+						$(".delete-modal-meta").css({'display':'none'});
+						$(".delete-modal-meta").removeClass("show");
+						$(".modal-backdrop").remove();
+					}
+				}
+			})
+			return false;
+		});
+	})
+</script>
+@stop
+<div class="modal delete-modal-meta" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Thông báo</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p>Bạn chắc là muốn xóa nhóm này.</p>
+			</div>
+			<div class="modal-footer">
+				<a href="#" class="btn btn-primary">Đồng ý</a>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+			</div>
+		</div>
+	</div>
+</div>

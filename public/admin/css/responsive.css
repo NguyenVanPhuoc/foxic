@@ -1,0 +1,573 @@
+@media only screen and (max-width: 1680px){
+	#sb-server .list .item.date .flatpickr-input, #sb-server .list .item.date .input-group-addon{ max-width: 184px;}
+}
+@media only screen and (max-width: 1440px){
+
+}
+@media only screen and (max-width: 1366px){
+	#sb-server .list .item.date .flatpickr-input, #sb-server .list .item.date .input-group-addon{ max-width: 167px;}
+}
+@media only screen and (max-width: 1280px){
+	#sb-server .list .item.date .flatpickr-input, #sb-server .list .item.date .input-group-addon{ max-width: 147px;}
+}
+@media only screen and (max-width: 1024px){
+	.hidden-1024{ display: none;}
+	.info-detail{
+		background-color: #f9f9f9;
+		display: none;
+		-webkit-transition: .3s;
+		-o-transition: .3s;
+		transition: .3s;
+	}
+	.info-detail.active { display: table-row;}
+	.info-detail .box{
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		background-color: #fff;
+		text-align: left;
+	}
+	.info-detail .box ul{ padding: 0 10px;}
+	header{
+		height: 60px;
+	    position: fixed;
+	    top: 0;
+	    transition: top 0.2s ease-in-out;
+	    width: 100%;
+	    z-index: 300;
+	}
+	.head .btn{ margin-top: -15px;}
+	.nav-up {top: -75px;}
+	#sidebar #logo{padding:10px; margin-top: 0}
+	.overlay {
+	    position: fixed;
+	    width: 100%;
+	    height: 1000vh;
+	    background: rgba(0, 0, 0, 0.55);
+	    left: 0;
+	    top: 0;
+	    z-index: 500;
+	    display: none;
+	}
+	.overlay.active{ display: block;}
+	header .navbar-right li.mobi-nav-icon{
+	    width: 30px;
+	    height: 30px;
+	    text-align: center;
+	    line-height: 30px;
+	    background: #f99d29;
+	    color: #fff!important;
+	    border-radius: 3px;	    
+	    margin-top: -5px;
+	    cursor: pointer;
+	    display: block;
+	    float: right;
+	}
+	header .navbar-right li.mobi-nav-icon i{display: block; line-height: 30px;}
+	#content{margin-left: 0}
+	#sidebar{ 
+		background:#303f50; 
+		left: -225px; 
+		-webkit-transition: left 0.3s;
+		-o-transition: left 0.3s;
+		transition: left 0.3s;
+	}
+	#sidebar.active{left: 0;}
+	#sidebar #logo .front-end{ top: 0;}
+	.dev-form .stt{ width: 5%;}
+	.dev-form table .title{ width: 25%;}
+	#articles .meta-icons{ right: -20px;}
+	.articles-page .search-form{
+		float: right;
+		width: 70%;	
+	}
+	.articles-page .filter{
+		float: left;
+		width: 30%;
+	}
+	#orders .list-orders .nav-order{width: 60%;}
+	.filter-date{width: 40%;}
+	#orders .tb-results .stt{width: 5%;}
+	#orders .tb-results .code{width: 15%;}
+	#orders .tb-results .route{width: 15%;}
+	#orders .tb-results .date{width: 15%;}
+	#orders .tb-results .note, #orders .tb-results .location,
+	#orders .tb-results .end, #orders .tb-results .name, #orders .tb-results .typeCar{display: none;}
+	#orders .tb-results .action .note{display: inline-block;}
+	#orders .tb-results .status{width: 12%;}
+	#orders .tb-results .total{width: 15%;}
+	#orders .tb-results .start{width: 16%;}
+	#orders .tb-results .action{width: 7%}
+	.list-orders .action a{margin-left: 0}
+	.detail ul.info{		
+	    padding-left: 0;
+	    list-style: none;
+    	font-size: 15px;
+	}
+	/* .detail ul.info li{margin-bottom: 5px;}
+	.detail ul.info li:last-child{margin-bottom: 2px;}
+	.detail ul.info li a{font-weight: 700} */
+	.info-detail .box ul{ margin-bottom: 0;}
+	.info-detail .box .read-more{ 
+		margin: 0 0 10px 10px;
+		display: block;
+		font-weight: 700
+	}
+	#page-frm .date{width: 15%}
+	#page-frm .action{width: 10%}
+	.table th, .table td{word-break: break-all;}
+	#reviwers{padding:0;}
+	#reviwers .stt{width: 5%; text-align: center;}
+	#reviwers .image{width: 10%;}
+	#reviwers .title{width: 30%;}
+	#reviwers .date{width: 12%;}
+	#reviwers .action{width: 8%;}
+	#media-frm .action{text-align: center;}
+	.dev-form .check{ 
+		width: 1%;
+		max-width: 35px;
+	}
+	#articles .main .list .stt{ width: 2%;}
+	#articles .main .list .image{ width: 5%;}
+	#articles .main .list .title{ width: 10%;}
+	#articles .main .list .category{ width: 9%;}
+	#articles .main .list .desc{ width: 35%;}
+	#articles .main .list .author{ width: 5%;}
+	#articles .main .list .status{ width: 1%;}
+	#articles .main .list .action{ width: 5%;}
+	.main .content{padding:0;}
+	.main .sidebar{padding-right:0;}
+	.head{
+		margin-top: 55px;
+		margin-bottom: 15px;
+		padding-bottom: 20px;
+	}
+	#pages .dev-form{padding:0 5px;}
+	#edit-page, #create-page{padding:0;}
+	#edit-page .dev-form, #create-page .dev-form{padding:0;}	
+	.slides .sortable li{padding-right: 65px;}
+	.slides .link-title{padding-right: 0;}
+	.slides .link-title .frm-text{float: left; width: 80%;}
+	.slides .link-title .img-upload{float: left; width: 20%;}
+	.slides .link-title .img-upload .image{width: 100%;}
+	#media #media-frm .stt{text-align: center; width: 5%}
+	#media #media-frm .image{width: 15%}
+	#media #media-frm .title{width: 18%}
+	#media .table .category{width:  15%;}
+	#media #media-frm .date{width: 15%}
+	#media #media-frm .author{width: 15%}
+	#media #media-frm .action{width: 15%}
+	#mediaFields #group-meta .stt{width: 5%; text-align: center;}
+	#mediaFields #group-meta .title{width: 45%;}
+	#mediaFields #group-meta .type{width: 15%;}
+	#mediaFields #group-meta .date{width: 25%;}
+	#mediaFields #group-meta .action{width: 10%;}
+	#group-meta .action .view{ display: none;}
+	#group-meta .info-detail{ display: none;}
+	#group-meta .info-detail.active{ display: table-row;}
+}
+@media only screen and (max-width: 991px){
+	.hidden-991{ display: none !important;}
+	.main .content{ padding: 0 15px;}
+	.main .sidebar{ padding: 0 15px;}
+	#sb-server .list .item.date .flatpickr-input, #sb-server .list .item.date .input-group-addon{ max-width: 100%;}
+	.dev-form .stt{ width: 6%;}
+	.articles-page .search-form{ width: 65%;}
+	.articles-page .filter{ width: 35%;}
+	.p-histories .search-form{ width: 60%;}
+	.p-histories .filter{ width: 40%;}
+	.p-user .dev-form table .title{ width: 20%;}
+	#create-user .edit-post .content #roles-sex{ margin-bottom: 15px;}
+	.media-fields #groupMeta-fields #title{float: left; width: 70%;}
+	.media-fields #groupMeta-fields #object{float: left; width: 30%; padding-left: 0;}
+	.p-api .api-info .left-box{ margin-bottom: 15px;} 
+}
+@media only screen and (max-width: 768px){
+	.show-768{ display: block;}
+	.hidden-768{ display: none;}
+	#orders .list-orders .nav-order{width: 100%; margin-top: 15px;}
+	#orders .top h3, .filter-date .filter{display: none;}
+	.filter-date{
+		float: left;
+		margin-top: -40px;
+	}
+	.search-date button{top: -9px;}
+	.filter-date .date input{margin-left: 0}
+	#orders .tb-results .start, #orders .tb-results .shipper{display: none;}
+	#orders .tb-results .detail .ticket-info{margin-bottom: 15px;}
+	#orders .tb-results .title{width: 18%;}
+	#orders .tb-results .start{width: 14%;}
+	#page-frm .date{display: none;}	
+	#page-frm .title{ width: 15%;}
+	#page-frm .author{ width: 10%;}
+	#customers .date{display: none;}
+	#customers .stt{width: 7%}
+	#customers .avatar{width: 9%}
+	#customers .title{width: 25%}
+	#customers .phone{width: 15%}
+	#customers .email{width: 22%}
+	#customers .action{width: 25%}
+	#price-frm .stt{width:7%}
+	#price-frm .date{display: none;}
+	#reviwers .title{width: 25%;}
+	#reviwers .date{width: 17%;}
+	#group-meta .stt{width: 7%}
+	#media-frm .stt{width: 8%;}
+	.articles-page .filter, .articles-page .search-form{ width: 100%;}
+	#articles .main .list .stt{ width: 3%;}
+	#articles .main .list .desc{display: none;}
+	#articles .main .list .title{width: 15%;}
+	#articles .main .list .action{ width: 6%;}
+	.articles-page .search-form form #frm-category{float: left;}
+	.articles-page .search-form form #frm-title{float: left;}
+	.p-histories .filter, .p-histories .search-form{ width: 100%}
+	.p-histories .search-form{ margin-bottom: 15px;}
+	.blog-page{ padding: 0 15px;}
+	#edit-blog .group-action{float: left; width: 100%;}
+	#sb-categories .item:last-child{margin-bottom: 0;}
+	#pages .stt{width: 6%;}
+	#pages .dev-form{padding:0;}
+	.slides .link-title .frm-text{float: left; width: 70%;}
+	.slides .link-title .img-upload{float: left; width: 30%;}
+	.slides .link-title .frm-text{padding-right: 0;}
+	#media #media-frm .stt{width: 8%;}
+	#media #media-frm .author{width: 13%;}
+	#fields.meta .item{margin-left: 0;}
+	#fields.meta .item .form-group{float: left; padding-left: 0;}
+	#fields.meta .item .col-md-6{width: 40%;}
+	#fields.meta .item .col-md-3{width: 25%;}
+	#fields.meta .item .col-md-2{width: 25%;}
+	#fields.meta .item .col-md-1{width: 10%;}
+	#mediaFields #group-meta .stt{width: 8%;}
+	#mediaFields #group-meta .title{width: 30%;}
+	#add-menu-page{padding-left: 0;}
+	#add-menu-page .sidebar{padding:0 15px 15px 15px;}	
+	.menu-page .link-content .type{width: 40%; float: left;}
+	.menu-page .link-content .type-value{width:60%; float: left; padding-left: 0;}
+	#orders .tb-results .stt{width: 7%;}
+	#group-meta .action .view{display: inline-block;}
+}
+@media only screen and (max-width: 736px){
+	.hidden-736{ display: none !important;}
+	.articles-page .search-form form{
+		max-width: 100%;
+		width: 100%;
+	}
+	#orders .tb-results .customer{display: none;}
+	#orders .tb-results .stt{width: 7%;}
+	#articles .main .list .stt{width: 5%;}
+	#articles .main .list .image{width: 8%;}
+	#articles .main .list .title{ width: 18%;}
+	#articles .main .list .category{ width: 15%;}
+	#articles .main .list .action{ width: 9%;}
+	#mediaFields #group-meta .title, #mediaFields #group-meta .type{ width: 20%;}
+	#add-menu-page{padding-right: 0;}
+	.dev-form .stt{ width: 7%;}
+	.search-form{padding: 10px;}
+	.search-form button[type='submit'] {
+	    position: relative;
+	    width: 100%;
+	    margin: 0 0 10px 10px;
+	}
+	.mar-bottom{margin-bottom: 10px;}
+	.pull-right {float: inherit!important;}
+	.search-form form{padding: 10px;}
+	.search-form form > div{margin-bottom: 10px}
+
+}
+@media only screen and (max-width: 667px){
+	.hidden-667{ display: none;}
+	.filter-date .date input{min-width: 240px;}
+	#orders .top .search-frm input{width: 240px;}
+	#pages .stt{ width: 2%;}
+	#page-frm .action{width: 2%}
+	#customers .stt{width: 8%}
+	#customers .avatar{width: 10%}
+	#customers .title{width: 35%}
+	#customers .phone{width: 18%}
+	#customers .email{width: 26%}
+	#customers .action{width: 11%}
+	#price-frm .stt{width:8%}
+	#reviwers .date{display: none;}
+	#media-frm .date{display: none;}
+	#orders .tb-results .date{display: none;}
+	.filter-date .search-date{right: 15px;}
+	.filter-date{
+		float: right;
+    	width: unset;
+    	margin-top: 0;
+	}	
+	.slides .link-title .frm-text{padding-right: 0;}
+	.slides .link-title .frm-text{width: 65%;}
+	.slides .link-title .img-upload{width: 35%;}
+	#articles .main .list .stt{ width: 3%;}
+	#articles .main .list .title{width: 20%;}
+	#articles .main .list .image{ width: 7%;}
+	#mediaFields #group-meta .title{width: 20%;}
+	#articles .main .list .action{ width: 5%;}
+	.action a{
+		margin: 0 auto 5px; 
+		display: inline-block; 
+		text-align: center;
+	}
+	.action a:last-child{ margin: 0 auto;;}
+	.menu-page .link-content .type, .menu-page .link-content .type-value{ 
+		width: 100%;
+		padding: 15px;
+	}
+	.dev-form table .image{ width: 15%;}
+	.dev-form table .title{ width: 40%;}
+	.dev-form table .member{ width: 15%;}
+	.dev-form table .action{ width: 10%;}
+}
+@media only screen and (max-width: 600px){
+	.hidden-600{ display: none !important;}
+	#orders .tb-results .total{display: none;}
+	#page-frm .author{display: none;}
+	#customers .email{display: none;}
+	h2.title{font-size: 20px;}
+	#price-frm .min_price{display: none;}
+	#price-frm .title{width: 20%;}
+	#price-frm .price{width: 15%;}	
+	#price-frm .driver_type{width: 10%;}
+	#price-frm .action{width: 7%;}
+	#group-meta .stt{width: 8%}
+	.slides .sortable li .fa-trash{right: 8px;}
+	.slides .sortable li{ padding-right: 40px;}
+	.slides .link-title .frm-text{width: 60%;}
+	.articles-page .search-form .s-key{ padding-left: 5px;}
+	.articles-page .search-form .s-author{ padding: 0 5px;}
+	#articles .main .list .action{ width: 3%;}
+	#frm-meta .sortable .frm-icon, #frm-meta .sortable .frm-skill{ width: 100%;}
+	#frm-meta .sortable .frm-icon{ margin-bottom: 15px;}
+	#frm-meta .sortable .frm-skill{ padding-right: 15px;}
+	#frm-meta .sortable .frm-skill .frm-input{ 
+		width: calc(100% - 36px);
+		float: left;
+	}	
+	#frm-meta .sortable i.fa-trash{ 
+		position: unset;
+		float: right;
+	}
+	.slides .link-title .frm-text, .slides .link-title .img-upload{ 
+		width: 100%;
+		padding: 0 15px;
+		margin-bottom: 15px;
+	}
+	.slides .link-title .img-upload .image{ max-height: inherit;}
+	.slides .sortable li{ text-align: center;}
+	.slides .sortable li .fa-trash{ position: unset;}
+	#customers .stt{ width: 10%;}
+	#customers .avatar{ width: 15%;}
+	.media-fields #groupMeta-fields #title, .media-fields #groupMeta-fields #object, #fields.meta .item .col-md-6, #fields.meta .item .col-md-3, #fields.meta .item .col-md-2
+	{ 
+		width: 100%;
+		padding: 0 15px;
+	}
+	#fields.meta .item{ margin: 0 -15px;}
+	#fields.meta .item .col-md-1{ 
+		padding: 0 15px;
+		width: 15%
+	}
+	#fields.meta .item .btn{ 
+		margin-top: 0;
+		width: 100%;
+	}
+	.dev-form .stt{ width: 8%;}
+	.dev-form #card-transactions .action, .dev-form #atm-transactions .action{ width: 11%;}
+	.p-user .frm-search, .p-user .filter{ width: 100%;}
+	.p-user .frm-search{ margin-bottom: 20px;}
+	#frm-meta .sortable i.fa-trash{ 
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+	.p-api .sortable li .frm-money, .p-api .sortable li .frm-coin{ width: 50%;}
+}
+@media only screen and (max-width: 568px){
+	.hidden-568{ display: none;}
+	#customers .action{ width: 15%;}
+	#articles .main .list .image{ width: 8%;}
+	#articles .main .list .title{ width: 20%;}
+	.dev-form table .title{ width: 25%;}
+	.dev-form .stt{ width: 9%;}
+	#edit-comic .group-cs {
+	    float: right;
+	    margin-top: 10px;
+	}
+}
+@media only screen and (max-width: 480px){
+	.hidden-480{ display: none;}
+	h1.title{font-size: 20px; line-height: 26px;}
+	.filter-date{float: right; margin-top: 0; margin-right: 15px; width: 260px;}
+	.filter-date .date input{min-width: unset; width: 260px;}
+	#orders .tb-results .date{display: none;}
+	#orders .list-orders .nav-order li{padding:0 8px;}
+	#orders .tb-results .status{width: 15%;}
+	.filter-date .date-box input{min-width: 250px;}
+	#customers .stt{width: 15%}
+	#price-frm .driver_type{display: none;}
+	#price-frm .stt{width: 5%;}
+	#group-meta .date{display: none;}
+	#group-meta .stt{width: 12%;}
+	#media-frm .author{display: none;}
+	#media-frm .stt{width: 12%}
+	.articles-page .search-form form{ 
+		padding: 10px;
+		text-align: center;
+	}
+	.articles-page .search-form form #frm-category, .articles-page .search-form .s-key, .articles-page .search-form .s-author{
+		width: 100%;
+		padding: 0;
+		margin-bottom: 15px;
+	}
+	.articles-page .search-form .s-key input{ 
+		margin-bottom: 0;
+		padding: 6px 12px;
+	}
+	.search-form button[type='submit']{ 
+		position: unset;
+		width: 100%;
+		margin:0;
+	}
+	#articles .main .list .stt{ width: 2%;}
+	#articles .main .list .category{display: none;}
+	#articles .main .list .title{ width: 9%;}
+	main{padding:20px;}
+	footer{position: static; text-align: center;}
+	#pages .stt{width: 2%; text-align: center;}
+	#brands .date{display: none;}
+	#slide-page h1.title{text-align: left;}
+	.slides .link-title .frm-text{width: 100%;}
+	.slides .link-title .img-upload .image{width: 100%;}
+	.slides .sortable li .fa-trash{margin-top: -25px;}
+	.container.media-fields{padding:0;}
+	#menu-page h1.title{text-align: left;}
+	.menu-page .link-content .type, .menu-page .link-content .type-value{width:100%; padding-left: 15px;}
+	#add-menu-page .sidebar, #edit-menu .sidebar{display: none;}
+	.menu-page .link-content .type{margin-bottom: 15px;}
+	#system #logo, #system #favicon{width: 100%;}
+	#fields.meta .item .col-md-1{ width: 20%;}
+	.menu-page .link-content .type, .menu-page .link-content .type-value{ 
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+	.menu-page .link-content .type-value{ margin-bottom: 15px;}
+	#histories .search-form form{ padding: 10px;}
+	#histories .search-form form > .row{ margin: 0 -10px;}
+	#histories #frm-start, #histories #frm-end{ 
+		width: 100%;
+		padding: 0 10px;
+		margin-bottom: 15px;
+	}
+	.dev-form .stt{ width: 10%;}
+	.dev-form #card-transactions .action, .dev-form #atm-transactions .action{ width: 13%;}
+	.p-user .search-form form{ padding: 10px;}
+	.p-user .search-form form input{ margin-bottom: 15px;}
+	#customers .title{ width: 30%;}
+	.box-wrap h2.title{ padding: 10px;}
+	.sortable li{ padding: 15px 20px;}
+	.sortable li:before{ left: 5px;}
+	.p-api .sortable li .frm-money, .p-api .sortable li .frm-coin{ 
+		width: 100%;
+		padding: 0 15px;
+	}
+	.p-api .sortable li .frm-money{ margin-bottom: 15px;}
+	#frm-meta .sortable i.fa-trash{ 
+		position: unset;
+		margin-top: 15px;
+	}
+	.frm-search {
+	    float: left;
+	    width: 100%;
+	}
+	.frm-search .search-form button{margin-top: 10px;}
+	#dropzone .gr-action {
+	    margin-top: 20px;
+	}
+	#comments .s-key{margin-top: 10px}
+	#comments .btn-marow{padding: 0 15px;}
+}
+@media only screen and (max-width: 424px){	
+	.hidden-424{ display: none;}
+	#articles .main .list .stt{ width: 1%;}
+	#articles .main .list .image{ width: 5%;}
+	#articles .main .list .title{ width: 6%;}
+	#mediaFields #group-meta .stt, #mediaFields #group-meta .action{ width: 15%;}	
+	#customers .avatar{ width: 20%;}
+	.dev-form .check{ max-width: 40px;}
+	.dev-form .stt{ width: 12%;}
+	.dev-form #card-transactions .action, .dev-form #atm-transactions .action { width: 15%;}
+}
+@media only screen and (max-width: 414px){	
+	#orders .tb-results .code{display: none;}
+	#customers .phone{display: none;}
+	#reviwers .stt{width: 7%}
+	#reviwers .image{width: 15%}
+	#group-meta .type{display: none;}
+	#group-meta .action{text-align: center;}
+	#group-meta .stt{width: 14%}
+	#media-frm .stt{width: 14%}
+	.articles-page .search-form form{max-width: 100%; height: unset; padding: 10px;}
+	.articles-page .search-form form #frm-category{width: 100%; padding:0; margin-bottom: 10px;}
+	.articles-page .search-form form #frm-title{width: 100%; padding:0; margin-bottom: 10px;}
+	#articles .main .list .view-number{display: none;}
+	#brands .link{display: none;}
+	#media #media-frm .stt{width: 10%;}
+	#page-frm .title{ width: 20%;}
+	#page-frm .action{ text-align: center;}
+	#articles .main .list .stt{ width: 2%;}
+	#articles .main .list .title{ width: 10%;}
+	.dev-form #card-transactions .action, .dev-form #atm-transactions .action{ width: 20%;}
+}
+@media only screen and (max-width: 384px){	
+	#pages .stt{ width: 3%;}
+	#articles .main .list .stt{ width: 4%;}
+	#articles .main .list .title{ width: 15%;}
+	#articles .main .list .action{ width: 10%;}
+	.dev-form .stt{ width: 15%;}
+}
+@media only screen and (max-width: 375px){	
+	.hidden-375{ display: none;}
+	.nav-filter li{ padding: 0 10px;}
+	#page-frm .slug{display: none;}
+	#page-frm .action{width: 25%}
+	#orders .tb-results .code{width: 10%;}
+	#orders .tb-results .status{width: 15%;}
+	#page-frm .action{width: 31%;}
+	#page-frm .stt{width: 15%;}
+	#page-frm .title{width: 65%}
+	.action a.edit{margin-bottom: 8px;}
+	#price-frm .price{display: none;}
+	#reviwers .image{width: 15%}
+	#reviwers .stt{width: 8%}
+	#reviwers .title{width: 23%}
+	#reviwers .action{width: 10%}
+	#brands #list .title{width: 40%;}
+	#media #media-frm .title{display: none;}
+	#fields.meta .item .col-md-6{width: 100%;}
+	.route .img-upload .image{ max-height: inherit;}
+}
+@media only screen and (max-width: 320px){
+	.hidden-320{ display: none;}
+	#page-frm .action{width: 35%}
+	#customers .avatar{display: none;}
+	#reviwers .image{display: none;}
+	#reviwers .stt{width: 6%}
+	#group-meta .stt{width: 18%;}
+	#page-frm .title{width: 60%;}
+	#page-frm .stt{width: 16%;}	
+	#brands #list .title{width: 38%;}
+	#mediaFields #group-meta .title{width: 35%;}
+	#orders .tb-results .status{display: none;}
+	.sortable.list-item li a{
+		float: unset;
+		width: 100%;
+		display: block;
+	}
+	.nav-filter li{ padding: 0 5px;}
+	#fields.meta .item .col-md-1{ width: 30%;}
+	#articles .main .list .stt{ width: 6%;}
+	.dev-form .stt{ width: 7%;}
+	.dev-form #card-transactions .stt, .dev-form #atm-transactions .stt{ width: 16%;}
+	.dev-form #card-transactions .action, .dev-form #atm-transactions .action{ width: 22%;}
+}

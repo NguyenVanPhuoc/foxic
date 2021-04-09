@@ -1,0 +1,26 @@
+@php $categories = get_categories();
+	$views = getAds(16);
+	$cat_slug = empty($cat)? '' : $cat->slug;	
+@endphp
+@desktop
+@if($views)
+<aside id="sb-view" class="sb-slide">
+	<h3 class="sb-title"><span>Tin quảng cáo</span></h3>	
+	<div class="desc">
+		{!! $views->content !!}
+	</div>
+</aside>
+@endif
+@if($categories)
+<aside id="sb-categories">
+	<h3 class="sb-title"><span>Danh mục</span></h3>
+	<div class="desc">
+		<ul class="list-cat">
+			@foreach($categories as $item)
+			<li <?php if($cat_slug==$item->slug) echo ' class="active"';?>><a href="{{$item->slug}}"><i class="fas fa-circle"></i>{{$item->title}}</a></li>
+			@endforeach
+		</ul>
+	</div>
+</aside>
+@endif
+@enddesktop

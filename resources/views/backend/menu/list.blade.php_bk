@@ -1,0 +1,53 @@
+@extends('backend.layout.index')
+@section('title','Dashboard')
+@section('content')
+<div id="menu-page" class="container page">
+	<div class="head">
+		<h1 class="title">Menu</h1>
+		<a href="{{route('storeMenu')}}" class="btn">Thêm menu</a>
+	</div>
+	<div class="main row">		
+		<div class="col-md-4 left-box">
+			<h2>Menus</h2>
+			<div class="desc">
+				<p>Danh sách menu sẽ giúp khách hàng duyệt web của bạn dễ dàng hơn.</p>				
+			</p>Danh sách menu còn có thể sử dụng để <a href="#" target="_blank">tạo menu đa cấp</a> cho trang web của bạn.</p>
+		</div>
+	</div>
+	<div class="col-md-8 right-box">
+		<section class="ui-sec">
+			<h2>Main menu <a href="#">Sửa menu <i class="fa fa-angle-down" aria-hidden="true"></i></a></h2>
+			<ul class="sortable">
+				<li class="ui-state-default">
+					Trang chủ <a href="#">Tạo</a>
+					<input type="hidden" name="links[]" data-type="page" data-number="1" value="1">
+				</li>
+				<li class="ui-state-default">Trang chủ 1 <a href="#">Tạo</a><input type="hidden" name="links[]" data-type="page" data-number="1" value="1"></li>
+				<li class="ui-state-default">Trang chủ 2 <a href="#">Tạo</a><input type="hidden" name="links[]" data-type="page" data-number="1" value="1"></li>
+				<li class="ui-state-default">Trang chủ 3 <a href="#">Tạo</a><input type="hidden" name="links[]" data-type="page" data-number="1" value="1"></li>
+				<li class="ui-state-default">Trang chủ 4 <a href="#">Sửa</a><input type="hidden" name="links[]" data-type="page" data-number="1" value="1"></li>
+			</ul>
+		</section>
+		<section class="ui-sec">
+			<h2>Main menu <a href="#">Sửa menu <i class="fa fa-angle-down" aria-hidden="true"></i></a></h2>
+			<ul class="sortable">
+				<li class="ui-state-default">Trang chủ <a href="#">Tạo</a><input type="hidden" name="links[]" data-type="page" data-number="1" value="1"></li>
+				<li class="ui-state-default">Trang chủ 1 <a href="#">Tạo</a><input type="hidden" name="links[]" data-type="page" data-number="1" value="1"></li>
+				<li class="ui-state-default">Trang chủ 2 <a href="#">Tạo</a><input type="hidden" name="links[]" data-type="page" data-number="1" value="1"></li>
+				<li class="ui-state-default">Trang chủ 3 <a href="#">Tạo</a><input type="hidden" name="links[]" data-type="page" data-number="1" value="1"></li>
+				<li class="ui-state-default">Trang chủ 4 <a href="#">Sửa</a><input type="hidden" name="links[]" data-type="page" data-number="1" value="1"></li>
+			</ul>
+		</section>
+		<div class="btn-help"><i class="fa fa-question-circle-o" aria-hidden="true"></i>Bạn có thể xem hướng dẫn tạo Menu<a href="#">tại đây</a></div>
+	</div>
+</div>
+<script>
+	$(function() {
+		$(".sortable" ).sortable({
+			update: function( event, ui ) {
+				// alert('123');
+			}
+		});
+	});
+</script>
+@stop

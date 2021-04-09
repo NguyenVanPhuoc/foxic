@@ -1,0 +1,1 @@
+Truyện {{ $comic->title}} của bạn đã được admin duyệt.

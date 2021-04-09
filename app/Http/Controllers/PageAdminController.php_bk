@@ -1,0 +1,150 @@
+<?php
+namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Http\Requests;
+use App\Pages;
+use App\GroupMetas;
+use App\Metas;
+use App\User;
+use App\Seo;
+use App\Action;
+
+class PageAdminController extends Controller
+{
+    public function index(){
+    	$pages = Pages::orderBy('updated_at', 'desc')->paginate(14);
+        return view('backend.page.list',['pages'=>$pages]);
+    }
+    
+    public function create(){
+    	return view('backend.page.create');
+    }
+
+    public function store(Request $request){
+    	$message = "error";
+        if($request->ajax()){
+        	$user = Auth::User();
+        	$page = new Pages;
+            $page->title = $request->title;
+        	$page->slug = $request->title;
+        	$page->content = $request->content;
+        	$page->user_id = $user->id;
+        	if($page->save()){
+                $seo = new Seo;
+                $seo->key = $request->metaKey;
+                $seo->value = $request->metaValue;
+                $seo->type = 'page';
+                $seo->post_id = $page->id;
+                $seo->save();
+            }
+            $message = "success";
+        }
+        return $message;
+    }
+    
+    public function edit($id){
+        $page = Pages::find($id);
+        $seo = get_seo($id,'page');
+    	return view('backend.page.edit',['page'=>$page, 'seo'=>$seo]);
+    }
+
+    public function update(Request $request, $id){
+        $message = "error";
+        if($request->ajax()){
+            $page = Pages::find($id);
+            $page->title = $request->title;
+            $page->slug = $request->title;
+            $page->content = $request->content;
+            if($page->save()){
+                $metaFields = json_decode($request->metaFields);
+                if(count($metaFields)>0):
+                    foreach ($metaFields as $item) {   
+                        $meta = Metas::find($item->id);
+                        $meta->content = $item->content;
+                        $meta->save();
+                    }
+                endif;
+                $seo = Seo::where('post_id',$id)->where('type','page')->first();
+                if(!$seo){
+                    $seo = new Seo;
+                }
+                $seo->key = $request->metaKey;
+                $seo->value = $request->metaValue; 
+                $seo->type = 'page';
+                $seo->post_id = $id;
+                $seo->save();
+            }
+            $message = "success";
+        }
+        return $message;
+    }
+	public function delete($id){
+        $seo = Seo::where('post_id',$id)->where('type','page');
+        if($seo) $seo->delete();
+    	$page = Pages::find($id);
+    	$page->delete();
+    	return redirect()->route('pagesAdmin')->with('success','Delete success');
+    }
+    //deleteAll
+    public function deleteAll(Request $request){        
+        $message = "error";
+        if($request->ajax()){
+            $items = json_decode($request->items);
+            if(count($items)>0){
+                Pages::destroy($items);
+            }
+            $message = "success";
+        }
+        return $message;
+    }
+    public function statisticalAdmin(Request $request){
+        $startDate = $request->startDate;
+        $endDate = $request->endDate;
+        $user_id = $request->user_id;
+        //dd($startDate,$endDate,$user_id);
+        $comic_query = function ($query) {
+            return $query->select('id','user_id', 'status')->where('status','public');
+        };
+        $action_query = function ($query) use ($startDate) {
+            return $query->select('id','user_id', 'comic_id', 'point', 'rental_period')->whereDate('rental_period', '>=', $startDate);
+        };
+        $date_query = function ($query) use ($endDate) {
+            return $query->select('id','user_id', 'comic_id', 'point', 'rental_period')->whereDate('rental_period', '<=', $endDate);
+        };
+        /*if($user_id != ''){
+            $user = User::with(['comics'=>$comic_query, 'comics.actions', 'comics.views'])
+                        ->whereHas('comics', $comic_query)->where('id', $user_id)->get(); 
+        }elseif($user_id != '' && $startDate!='' && $endDate!=''){
+            $user = User::with(['comics'=>$comic_query, 'comics.actions'=>$action_query, 'comics.views'])
+                        ->whereHas('comics', $comic_query)
+                        ->whereHas('comics.actions', $action_query)
+                        ->where('id', $user_id)->get();
+        }else{*/
+        /*}*/
+        $user = User::with(['comics'=>$comic_query, 'comics.actions', 'comics.views'])
+                        ->whereHas('comics', $comic_query)->get(); 
+        if(isset($user_id) && $user_id != ''){
+            $user = User::with(['comics'=>$comic_query, 'comics.actions', 'comics.views'])
+                        ->whereHas('comics', $comic_query)->where('id', $user_id)->get(); 
+        }
+        if(isset($startDate) && $startDate != ''){
+            $user = User::with(['comics'=>$comic_query, 'comics.actions'=>$action_query, 'comics.views'])
+                        ->whereHas('comics', $comic_query)
+                        ->whereHas('comics.actions', $action_query)->get();
+        }
+        if(isset($startDate) && $startDate != ''){
+            $user = User::with(['comics'=>$comic_query, 'comics.actions'=>$date_query, 'comics.views'])
+                        ->whereHas('comics', $comic_query)
+                        ->whereHas('comics.actions', $date_query)->get();
+        }
+        //dd($user);
+        $author = User::with(['comics'=>$comic_query, 'comics.actions', 'comics.views'])
+                        ->whereHas('comics', $comic_query)->get();
+        $data=[];
+        $data['user']=$user;
+        $data['author']=$author;
+        return view('backend.page.list_statis',$data);
+    }
+    
+}

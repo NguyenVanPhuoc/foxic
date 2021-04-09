@@ -1,0 +1,13 @@
+@extends('templates.masterChap')
+@section('title', $comic->title)
+@section('content')
+    <div id="chap-page" class="pages comic-pages">
+        <input type="hidden" id="chap_next" name="chap_next" value={{ route('detailChap',['slugComic'=>$comic->slug, 'chap'=>(intval($chap->position) + 1)  ]) }}>
+        <div class="container flex item-center flex-col">
+            @php $listImage = json_decode($chap->content); @endphp
+            @foreach ($listImage as $image)
+                <img src="{{ getImgUrl($image) }}" alt="{{ $comic->title }}">
+            @endforeach
+        </div>
+    </div>
+@endsection

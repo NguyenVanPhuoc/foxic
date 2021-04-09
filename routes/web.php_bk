@@ -1,0 +1,383 @@
+<?php
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/ 
+Route::get('/tesss', function() {
+    Artisan::call('optimize');
+    return "optimize file removed";
+});
+Route::get('/updateapp', function() {
+    system('composer update');
+    echo 'dump-autoload complete';
+});
+
+Route::get('ajax_regen_captcha', function(){
+    return captcha_src();
+});
+//resize image
+Route::get('image/{scr}/{w}/{h}', function($src, $w=100, $h=100){
+	$caheimage = Image::cache(function($image) use ($src, $w, $h){ return $image->make('public/uploads/'.$src)->fit($w, $h);}, 10, true);
+	$extention = explode(".", $src);
+	return $caheimage->response($extention[1]);
+});
+Route::get('/test', ['as' => 'test', 'uses' => 'ComicController@test']);
+Route::get('403', ['as' => '403', 'uses' => 'ErrorController@forbiddenResponse']);
+Route::get('404', ['as' => '404', 'uses' => 'ErrorController@notfound']);
+Route::get('500', ['as' => '500', 'uses' => 'ErrorController@fatal']);
+Route::get('chap-403', ['as' => 'chap403', 'uses' => 'ErrorController@chap403']);
+Route::get('/', ['as'=>'home','uses'=>'PagesController@index']);
+Route::get('cus-login',['as'=>'storeLoginCustomer','uses'=>'user\UserController@getLogin']);
+Route::post('cus-login',['as'=>'postLoginCustomer','uses'=>'user\UserController@postLogin']);
+Route::get('cus-register',['as'=>'storeRegisterCustomer','uses'=>'user\UserController@getRegister']);
+Route::post('cus-register',['as'=>'postRegisterCustomer','uses'=>'user\UserController@postRegister']);
+Route::get('p/{slug}', ['as'=>'page','uses'=>'PagesController@getPage']);
+Route::get('ongoing',['as'=>'ongoing', 'uses'=>'PagesController@ongoing']);
+Route::get('ranking',['as'=>'ranking', 'uses'=>'PagesController@ranking']);
+Route::get('faqs', ['as'=>'faqs','uses'=>'PagesController@faqs']);
+Route::get('contact', ['as'=>'contact','uses'=>'PagesController@contact']);
+Route::post('contact', ['as'=>'updateContact','uses'=>'PagesController@updateContact']);
+Route::post('load-type-hot',['as'=>'loadTypeHot','uses'=>'PagesController@loadTypeHot']);
+Route::post('load-type-new',['as'=>'loadTypeNew','uses'=>'PagesController@loadTypeNew']);
+Route::post('save-star-rate',['as'=>'saveStarRate','uses'=>'ComicController@saveStarRate']);
+Route::get('tim-kiem',['as'=>'searchComic', 'uses'=>'ComicController@searchComic']);
+Route::post('load-ajax-tim-kiem',['as'=>'searchAjaxComic', 'uses'=>'ComicController@searchAjaxComic']);
+Route::post('save-setting-chap',['as'=>'saveSettingChap', 'uses'=>'ComicController@saveSettingChap']);
+Route::get('login', ['as'=>'login','uses'=>'AuthController@login']);
+Route::post('login', ['as'=>'postLogin','uses'=>'AuthController@postLogin']);
+Route::get('logout', ['as'=>'logout','uses'=>'AuthController@logout']);
+Route::get('register', ['as'=>'register','uses'=>'AuthController@register']);
+Route::post('register', ['as'=>'postRegister','uses'=>'AuthController@postRegister']);
+Route::get('forgot-password', ['as'=>'forgotPassword','uses'=>'AuthController@forgotPassword']);
+Route::post('forgot-password', ['as'=>'postForgotPassword','uses'=>'AuthController@postForgotPassword']);
+Route::get('retake-password', ['as'=>'retakePassword','uses'=>'AuthController@retakePassword']);
+Route::post('retake-password', ['as'=>'postRetakePassword','uses'=>'AuthController@postRetakePassword']);
+Route::group(['prefix'=>'danh-sach'], function(){
+	Route::get('/{slug}',['as'=>'catChap','uses'=>'ComicController@comicCat']);
+	Route::get('/{slug}/hoan-thanh',['as'=>'catChapFull','uses'=>'ComicController@comicCatFull']);
+});
+Route::group(['prefix'=>'the-loai'], function(){
+	Route::get('/{slug}',['as'=>'typeChap','uses'=>'ComicController@comicType']);
+	Route::get('/{slug}/hoan-thanh',['as'=>'typeChapFull','uses'=>'ComicController@comicTypeFull']);
+});
+Route::group(['prefix'=>'tac-gia'], function(){
+	Route::get('/{slug}',['as'=>'comicWriter','uses'=>'ComicController@comicWriter']);
+});
+Route::group(['prefix'=>'article'], function(){
+	Route::get('/{slug}',['as'=>'detailArticle','uses'=>'PagesController@detailArticle']);
+	Route::get('/cat/{slug}',['as'=>'cateArticle','uses'=>'PagesController@cateArticle']);
+});
+Route::group(['prefix'=>'admin','middleware'=>'adminLogin'],function(){
+	Route::get('/',['as'=>'indexAdmin','uses'=>'ComicAdminController@index']);
+	Route::group(['middleware' => ['role:admin']], function () {
+		//Role
+		Route::group(['prefix'=>'roles'],function(){
+			Route::get('/',['as'=>'rolesAdmin','uses'=>'RolesAdminController@index']);
+			Route::get('/create',['as'=>'createRolesAdmin','uses'=>'RolesAdminController@create']);
+			Route::post('/create',['as'=>'storeRolesAdmin','uses'=>'RolesAdminController@store']);
+			Route::get('/edit/{id}',['as'=>'editRolesAdmin','uses'=>'RolesAdminController@edit']);
+			Route::post('/edit/{id}',['as'=>'updateRolesAdmin','uses'=>'RolesAdminController@update']);
+			Route::get('/delete/{id}',['as'=>'deleteRoleAdmin','uses'=>'RolesAdminController@delete']);
+			Route::post('delete-all',['as'=>'deleteRolesAdmin','uses'=>'RolesAdminController@deleteAll']);
+		});
+		//pages
+		Route::group(['prefix'=>'pages'],function(){
+			Route::get('/',['as'=>'pagesAdmin','uses'=>'PageAdminController@index']);
+			Route::get('/create',['as'=>'createPageAdmin','uses'=>'PageAdminController@create']);
+			Route::post('/create',['as'=>'storePageAdmin','uses'=>'PageAdminController@store']);
+			Route::get('/edit/{id}',['as'=>'editPageAdmin','uses'=>'PageAdminController@edit']);
+			Route::post('/edit/{id}',['as'=>'updatePageAdmin','uses'=>'PageAdminController@update']);
+			Route::get('/delete/{id}',['as'=>'deletePageAdmin','uses'=>'PageAdminController@delete']);
+			Route::post('delete-all',['as'=>'deletePagesAdmin','uses'=>'PageAdminController@deleteAll']);
+		});
+		//System
+		Route::group(['prefix'=>'setting'],function(){
+			Route::get('/option',['as'=>'setting','uses'=>'OptionsAdminController@index']);		
+			Route::post('/edit-system',['as'=>'editSytem','uses'=>'OptionsAdminController@updateSystem']);
+			Route::post('/media',['as'=>'systemMedia','uses'=>'OptionsAdminController@media']);
+		});	
+		//menus
+		Route::group(['prefix'=>'menu'],function(){
+			Route::get('/',['as'=>'menu','uses'=>'MenuController@index']);
+			Route::get('/create',['as'=>'storeMenu','uses'=>'MenuController@store']);
+			Route::post('/create',['as'=>'creatMenu','uses'=>'MenuController@create']);
+			Route::get('/edit/{id}',['as'=>'editMenu','uses'=>'MenuController@edit']);
+			Route::post('/edit/{id}',['as'=>'updateMenu','uses'=>'MenuController@update']);
+			Route::get('/sub/{id}',['as'=>'storeSubMenu','uses'=>'MenuController@storeSubMenu']);
+			Route::post('/sub/{id}',['as'=>'createSubMenu','uses'=>'MenuController@createSubMenu']);
+			Route::get('/delete/{id}',['as'=>'deleteMenu','uses'=>'MenuController@delete']);
+			Route::post('/loadType',['as'=>'loadType','uses'=>'MenuController@loadType']);
+			Route::post('/search',['as'=>'searchMenu','uses'=>'MenuController@search']);
+		});
+		//slides
+		Route::group(['prefix'=>'slide'],function(){
+	        Route::get('/',['as'=>'slidesAdmin','uses'=>'SlideAdminController@index']);
+	        Route::get('create',['as'=>'storeSlideAdmin','uses'=>'SlideAdminController@store']);
+	        Route::post('create',['as'=>'createSlideAdmin','uses'=>'SlideAdminController@create']);
+	        Route::get('edit/{id}',['as'=>'editSlideAdmin','uses'=>'SlideAdminController@edit']);
+	        Route::post('edit/{id}',['as'=>'updateSlideAdmin','uses'=>'SlideAdminController@update']);
+	        Route::post('slug/{id}',['as'=>'slugSlideAdmin','uses'=>'SlideAdminController@changeSlug']);
+	        Route::post('delete/{id}',['as'=>'deleteSlideAdmin','uses'=>'SlideAdminController@delete']);
+	        Route::post('delete-choose',['as'=>'deleteChooseSlideAdmin','uses'=>'SlideAdminController@deleteChoose']);
+		});	
+		/*
+		* Category
+		*/
+		Route::group(['prefix'=>'categories'],function() {
+			Route::get('/',['as'=>'categoriesAdmin','uses'=>'CategoryAdminController@index']);
+			Route::get('create',['as'=>'createCategoryAdmin','uses'=>'CategoryAdminController@create']);
+			Route::post('create',['as'=>'storeCategoryAdmin','uses'=>'CategoryAdminController@store']);
+			Route::get('edit/{id}',['as'=>'editCategoryAdmin','uses'=>'CategoryAdminController@edit']);
+			Route::post('edit/{id}',['as'=>'updateCategoryAdmin','uses'=>'CategoryAdminController@update']);
+			Route::get('delete/{id}',['as'=>'deleteCategoryAdmin','uses'=>'CategoryAdminController@delete']);
+			Route::post('delete-all',['as'=>'deleteAllCategoryAdmin','uses'=>'CategoryAdminController@deleteAll']);
+		});
+		/*
+		* Comic
+		*/
+		Route::group(['prefix'=>'articles'],function() {
+			Route::get('/',['as'=>'articlesAdmin','uses'=>'ArticleAdminController@index']);
+			Route::get('create',['as'=>'createArticleAdmin','uses'=>'ArticleAdminController@create']);
+			Route::post('create',['as'=>'storeArticleAdmin','uses'=>'ArticleAdminController@store']);
+			Route::get('edit/{id}',['as'=>'editArticleAdmin','uses'=>'ArticleAdminController@edit']);
+			Route::post('edit/{id}',['as'=>'updateArticleAdmin','uses'=>'ArticleAdminController@update']);
+			Route::get('delete/{id}',['as'=>'deleteArticleAdmin','uses'=>'ArticleAdminController@delete']);
+			Route::post('delete-all',['as'=>'deleteAllArticleAdmin','uses'=>'ArticleAdminController@deleteAll']);
+		});
+
+		/*
+		* Category payment
+		*/
+		Route::group(['prefix'=>'categories-payment'],function() {
+			Route::get('/',['as'=>'catPaymentsAdmin','uses'=>'CategoryPaymentAdminController@index']);
+			Route::get('create',['as'=>'createCatPaymentAdmin','uses'=>'CategoryPaymentAdminController@create']);
+			Route::post('create',['as'=>'storeCatPaymentAdmin','uses'=>'CategoryPaymentAdminController@store']);
+			Route::get('edit/{id}',['as'=>'editCatPaymentAdmin','uses'=>'CategoryPaymentAdminController@edit']);
+			Route::post('edit/{id}',['as'=>'updateCatPaymentAdmin','uses'=>'CategoryPaymentAdminController@update']);
+			Route::get('delete/{id}',['as'=>'deleteCatPaymentAdmin','uses'=>'CategoryPaymentAdminController@delete']);
+			Route::post('delete-all',['as'=>'deleteAllCatPaymentAdmin','uses'=>'CategoryPaymentAdminController@deleteAll']);
+		});
+		/*
+		* Payment
+		*/
+		Route::group(['prefix'=>'payments'],function() {
+			Route::get('/',['as'=>'paymentsAdmin','uses'=>'PaymentAdminController@index']);
+			Route::get('create',['as'=>'createPaymentAdmin','uses'=>'PaymentAdminController@create']);
+			Route::post('create',['as'=>'storePaymentAdmin','uses'=>'PaymentAdminController@store']);
+			Route::get('edit/{id}',['as'=>'editPaymentAdmin','uses'=>'PaymentAdminController@edit']);
+			Route::post('edit/{id}',['as'=>'updatePaymentAdmin','uses'=>'PaymentAdminController@update']);
+			Route::get('delete/{id}',['as'=>'deletePaymentAdmin','uses'=>'PaymentAdminController@delete']);
+			Route::post('delete-all',['as'=>'deleteAllPaymentAdmin','uses'=>'PaymentAdminController@deleteAll']);
+		});
+
+		/*
+		* Notice
+		*/
+		Route::group(['prefix'=>'notices'],function() {
+			Route::get('/',['as'=>'noticesAdmin','uses'=>'NoticeAdminController@index']);
+			Route::get('create',['as'=>'createNoticeAdmin','uses'=>'NoticeAdminController@create']);
+			Route::post('create',['as'=>'storeNoticeAdmin','uses'=>'NoticeAdminController@store']);
+			Route::get('edit/{id}',['as'=>'editNoticeAdmin','uses'=>'NoticeAdminController@edit']);
+			Route::post('edit/{id}',['as'=>'updateNoticeAdmin','uses'=>'NoticeAdminController@update']);
+			Route::get('delete/{id}',['as'=>'deleteNoticeAdmin','uses'=>'NoticeAdminController@delete']);
+			Route::post('delete-all',['as'=>'deleteAllNoticeAdmin','uses'=>'NoticeAdminController@deleteAll']);
+		});
+		/*
+		* Change Votes
+		*/
+		Route::group(['prefix'=>'change-votes'],function() {
+			Route::get('/',['as'=>'votesAdmin','uses'=>'VoteAdminController@index']);
+			Route::get('create',['as'=>'createVoteAdmin','uses'=>'VoteAdminController@create']);
+			Route::post('create',['as'=>'storeVoteAdmin','uses'=>'VoteAdminController@store']);
+			Route::get('edit/{id}',['as'=>'editVoteAdmin','uses'=>'VoteAdminController@edit']);
+			Route::post('edit/{id}',['as'=>'updateVoteAdmin','uses'=>'VoteAdminController@update']);
+			Route::get('delete/{id}',['as'=>'deleteVoteAdmin','uses'=>'VoteAdminController@delete']);
+			Route::post('delete-all',['as'=>'deleteAllVoteAdmin','uses'=>'VoteAdminController@deleteAll']);
+		});
+		
+	});
+/**
+		 * Media
+		 */
+		Route::group(['prefix'=>'media'],function(){
+			Route::get('/',['as'=>'media','uses'=>'MediaAdminController@index']);
+			Route::get('create',['as'=>'createMedia', 'uses'=>'MediaAdminController@create']);
+			Route::post('create',['as'=>'storeMedia', 'uses'=>'MediaAdminController@store']);
+			Route::get('edit/{id}',['as'=>'editMedia', 'uses'=>'MediaAdminController@edit']);
+			Route::post('edit/{id}',['as'=>'updateMedia', 'uses'=>'MediaAdminController@update']);
+			Route::get('delete/{id}',['as'=>'deleteMedia','uses'=>'MediaAdminController@delete']);
+			Route::post('delete-all',['as'=>'deleteAllMedia','uses'=>'MediaAdminController@deleteAll']);
+			Route::post('load-by-cat',['as'=>'loadByCatMedia', 'uses'=>'MediaAdminController@loadByCat']);
+			Route::post('load-more',['as'=>'loadMoreMedia', 'uses'=>'MediaAdminController@loadMore']);
+		});
+		Route::group(['prefix'=>'media-cat'],function(){
+			Route::get('/',['as'=>'mediaCat','uses'=>'MediaCatAdminController@index']);
+			Route::get('create',['as'=>'createMediaCat', 'uses'=>'MediaCatAdminController@create']);
+			Route::post('create',['as'=>'storeMediaCat', 'uses'=>'MediaCatAdminController@store']);
+			Route::get('edit/{id}',['as'=>'editMediaCat', 'uses'=>'MediaCatAdminController@edit']);
+			Route::post('edit/{id}',['as'=>'updateMediaCat', 'uses'=>'MediaCatAdminController@update']);
+			Route::get('delete/{id}',['as'=>'deleteMediaCat','uses'=>'MediaCatAdminController@delete']);
+			Route::post('delete-all',['as'=>'deleteAllMediaCat','uses'=>'MediaCatAdminController@deleteAll']);
+			Route::post('position',['as'=>'positionAllMediaCat','uses'=>'MediaCatAdminController@position']);
+		});
+		//delete media with ajax
+		Route::post('delete-media',['as'=>'deleteMediaSingle','uses'=>'MediaAdminController@deleteMediaSingle']);
+		Route::post('loadMedia',['as'=>'loadMedia','uses'=>'MediaAdminController@loadMedia']);		
+		Route::post('load-more-page',['as'=>'loadMorePage','uses'=>'MediaAdminController@loadMorePage']);
+		Route::post('filter-media',['as'=>'filterMedia','uses'=>'MediaAdminController@searchMedia']);
+		Route::post('search-cat-media',['as'=>'searchCatMedia','uses'=>'MediaAdminController@loadMediaByCat']);
+		//group metas
+		Route::group(['prefix'=>'group-meta'],function(){
+			Route::get('/',['as'=>'metas','uses'=>'GroupMetaController@index']);
+			Route::get('create',['as'=>'createMeta','uses'=>'GroupMetaController@create']);
+			Route::post('/create',['as'=>'storeMeta','uses'=>'GroupMetaController@store']);
+			Route::get('/edit/{id}',['as'=>'editMeta','uses'=>'GroupMetaController@edit']);
+			Route::post('/edit/{id}',['as'=>'updateMeta','uses'=>'GroupMetaController@update']);
+			Route::get('/delete/{id}',['as'=>'deleteGroupMeta','uses'=>'GroupMetaController@delete']);
+		});
+	//users
+	Route::group(['prefix'=>'users'],function(){
+		Route::get('/',['as'=>'users','uses'=>'UserController@index']);
+		Route::get('role/{level}',['as'=>'levelAdmin','uses'=>'UserController@getUserByLevel']);
+		Route::get('create',['as'=>'createAdmin','uses'=>'UserController@create']);
+		Route::post('create',['as'=>'storeAdmin','uses'=>'UserController@store']);
+		Route::get('edit/{id}',['as'=>'editAdmin','uses'=>'UserController@edit']);
+		Route::post('edit/{id}',['as'=>'updateAdmin','uses'=>'UserController@update']);
+		Route::get('delete/{id}',['as'=>'deleteAdmin','uses'=>'UserController@delete']);
+		Route::post('delete-all',['as'=>'deleteUsersAdmin','uses'=>'UserController@deleteAll']);
+	});
+	//users
+	Route::group(['prefix'=>'user'],function(){
+		Route::get('/',['as'=>'user','uses'=>'UserController@editUser']);
+	});
+	/*
+	* Category comic
+	*/
+	Route::group(['prefix'=>'categories-comic'],function() {
+		Route::get('/',['as'=>'catComicsAdmin','uses'=>'CategoryComicAdminController@index']);
+		Route::get('create',['as'=>'createCatComicAdmin','uses'=>'CategoryComicAdminController@create']);
+		Route::post('create',['as'=>'storeCatComicAdmin','uses'=>'CategoryComicAdminController@store']);
+		Route::get('edit/{id}',['as'=>'editCatComicAdmin','uses'=>'CategoryComicAdminController@edit']);
+		Route::post('edit/{id}',['as'=>'updateCatComicAdmin','uses'=>'CategoryComicAdminController@update']);
+		Route::get('delete/{id}',['as'=>'deleteCatComicAdmin','uses'=>'CategoryComicAdminController@delete']);
+		Route::post('delete-all',['as'=>'deleteAllCatComicAdmin','uses'=>'CategoryComicAdminController@deleteAll']);
+	});
+
+	/*
+	* Type comic
+	*/
+	Route::group(['prefix'=>'types-comic'],function() {
+		Route::get('/',['as'=>'typeComicsAdmin','uses'=>'TypeComicAdminController@index']);
+		Route::get('create',['as'=>'createTypeComicAdmin','uses'=>'TypeComicAdminController@create']);
+		Route::post('create',['as'=>'storeTypeComicAdmin','uses'=>'TypeComicAdminController@store']);
+		Route::get('edit/{id}',['as'=>'editTypeComicAdmin','uses'=>'TypeComicAdminController@edit']);
+		Route::post('edit/{id}',['as'=>'updateTypeComicAdmin','uses'=>'TypeComicAdminController@update']);
+		Route::get('delete/{id}',['as'=>'deleteTypeComicAdmin','uses'=>'TypeComicAdminController@delete']);
+		Route::post('position-type-comic',['as'=>'positionTypeComicAdmin','uses'=>'TypeComicAdminController@position']);
+	});
+
+	/*
+	* Writer
+	*/
+	Route::group(['prefix'=>'writers'],function() {
+		Route::get('/',['as'=>'writersAdmin','uses'=>'WriterAdminController@index']);
+		Route::get('/create',['as'=>'createWriterAdmin','uses'=>'WriterAdminController@create']);
+		Route::post('/create',['as'=>'storeWriterAdmin','uses'=>'WriterAdminController@store']);
+		Route::get('/edit/{id}',['as'=>'editWriterAdmin','uses'=>'WriterAdminController@edit']);
+		Route::post('/edit/{id}',['as'=>'updateWriterAdmin','uses'=>'WriterAdminController@update']);
+		Route::get('delete/{id}',['as'=>'deleteWriterAdmin','uses'=>'WriterAdminController@delete']);
+		Route::post('delete-all',['as'=>'deleteAllWriterAdmin','uses'=>'WriterAdminController@deleteAll']);
+	});
+	
+
+	/*
+	* Comic
+	*/
+	Route::group(['prefix'=>'comics'],function() {
+		Route::get('/',['as'=>'comicsAdmin','uses'=>'ComicAdminController@index']);
+		Route::get('create',['as'=>'createComicAdmin','uses'=>'ComicAdminController@create']);
+		Route::post('create',['as'=>'storeComicAdmin','uses'=>'ComicAdminController@store']);
+		Route::get('edit/{id}',['as'=>'editComicAdmin','uses'=>'ComicAdminController@edit']);
+		Route::post('edit/{id}',['as'=>'updateComicAdmin','uses'=>'ComicAdminController@update']);
+		Route::get('delete/{id}',['as'=>'deleteComicAdmin','uses'=>'ComicAdminController@delete']);
+		Route::post('delete-all',['as'=>'deleteAllComicAdmin','uses'=>'ComicAdminController@deleteAll']);
+		Route::get('/create-permission/{permission}',['as'=>'createPermission','uses'=>'ComicAdminController@createPermission']);
+		/*
+		* Book (of comic)
+		*/
+		Route::group(['prefix'=>'books/{comic_id}'],function() {
+			Route::get('/',['as'=>'booksAdmin','uses'=>'BookAdminController@index']);
+			Route::get('create',['as'=>'createBookAdmin','uses'=>'BookAdminController@create']);
+			Route::post('create',['as'=>'storeBookAdmin','uses'=>'BookAdminController@store']);
+			Route::get('edit/{id}',['as'=>'editBookAdmin','uses'=>'BookAdminController@edit']);
+			Route::post('edit/{id}',['as'=>'updateBookAdmin','uses'=>'BookAdminController@update']);
+			Route::get('load-title',['as'=>'loadTitleBookAdmin','uses'=>'BookAdminController@loadTitle']);
+			Route::post('postion',['as'=>'postionBookAdmin','uses'=>'BookAdminController@postion']);
+			Route::get('delete/{id}',['as'=>'deleteBookAdmin','uses'=>'BookAdminController@delete']); //delete chap admin
+			/*
+			* Chap (of book)
+			*/
+			Route::group(['prefix'=>'chaps/{book_id}'],function() {
+				Route::get('/',['as'=>'chapsAdmin','uses'=>'ChapAdminController@index']);
+				Route::get('create',['as'=>'createChapAdmin','uses'=>'ChapAdminController@create']);
+				Route::post('create',['as'=>'storeChapAdmin','uses'=>'ChapAdminController@store']);
+				Route::get('edit/{id}',['as'=>'editChapAdmin','uses'=>'ChapAdminController@edit']);
+				Route::post('edit/{id}',['as'=>'updateChapAdmin','uses'=>'ChapAdminController@update']);
+				Route::get('load-title',['as'=>'loadTitleChapAdmin','uses'=>'ChapAdminController@loadTitle']);
+				Route::post('postion',['as'=>'postionChapAdmin','uses'=>'ChapAdminController@postion']);
+				Route::get('delete/{id}',['as'=>'deleteChapAdmin','uses'=>'ChapAdminController@delete']); //delete chap admin
+			});
+		});
+	});
+	
+	/*
+	* Media comic
+	*/
+	Route::post('load-media-comic',['as'=>'loadMediaComic','uses'=>'MediaComicAdminController@loadMedia']);
+	Route::group(['prefix'=>'media-comics'],function() {
+		Route::post('create',['as'=>'createMediaComic', 'uses'=>'MediaComicAdminController@create']);
+	});
+
+});
+Route::group(['prefix'=>'tai-khoan','middleware'=>'memberLogin'],function(){
+	Route::get('/',['as'=>'profile', 'uses'=>'AuthController@profile']);	
+	Route::get('sua',['as'=>'editProfile', 'uses'=>'AuthController@editAccount']);
+	Route::post('sua',['as'=>'updateProfile', 'uses'=>'AuthController@updateAccount']);
+	Route::get('mat-khau',['as'=>'editPassword', 'uses'=>'AuthController@editPassword']);
+	Route::post('mat-khau',['as'=>'updatePassword', 'uses'=>'AuthController@updatePassword']);
+	Route::get('media',['as'=>'mediaProfile', 'uses'=>'MediaController@index']);
+	Route::get('media/them',['as'=>'createMediaProfile', 'uses'=>'MediaController@create']);
+	Route::post('media/them',['as'=>'storeMediaProfile', 'uses'=>'MediaController@store']);
+	Route::get('media/sua/{id}',['as'=>'editMediaProfile', 'uses'=>'MediaController@edit']);
+	Route::post('media/sua/{id}',['as'=>'updateMediaProfile', 'uses'=>'MediaController@update']);
+	Route::get('media/xoa/{id}',['as'=>'deleteMediaProfile', 'uses'=>'MediaController@delete']);
+	Route::post('media/xoa',['as'=>'deleteMediasProfile', 'uses'=>'MediaController@deleteAll']);
+	Route::post('delete-library',['as'=>'deleteLibraryProfile', 'uses'=>'MediaController@deleteMediaSingle']);
+	Route::post('change-avatar',['as'=>'avatarProfile', 'uses'=>'MediaController@changeAvatar']);
+	Route::post('load-more-media',['as'=>'loadMoreMediaProfile', 'uses'=>'MediaController@loadMoreMedia']);
+	Route::post('filter-media',['as'=>'filterMediaProfile','uses'=>'MediaController@searchMedia']);	
+	Route::get('coin/add',['as'=>'addCoin','uses'=>'AuthController@addCoin']);	
+	Route::get('coin/history',['as'=>'historyCoin','uses'=>'AuthController@historyCoin']);	
+	Route::get('poin/history',['as'=>'historyPoint','uses'=>'AuthController@historyPoint']);	
+	Route::get('bookshelf/history',['as'=>'historyChap','uses'=>'AuthController@historyChap']);	
+	Route::get('bookshelf/buy',['as'=>'buyChaps','uses'=>'AuthController@buyChaps']);	
+	Route::get('bookshelf/rental',['as'=>'rentalChaps','uses'=>'AuthController@rentalChaps']);	
+	Route::get('change-votes',['as'=>'changeVotes','uses'=>'AuthController@changeVotes']);	
+	Route::post('changeVoteXu',['as'=>'changeVoteXu', 'uses'=>'AuthController@changeVoteXu']);
+	Route::post('changeVotePoint',['as'=>'changeVotePoint', 'uses'=>'AuthController@changeVotePoint']);
+});
+Route::group(['prefix'=>'{slugComic}'],function(){
+	Route::get('/',['as'=>'listChap', 'uses'=>'ComicController@listChap']);
+	Route::get('/{slugChap}',['as'=>'detailChap', 'uses'=>'ComicController@detailChap']);
+});
+Route::post('rent-chap',['as'=>'rentChap', 'uses'=>'ComicController@rentChap']);
+Route::post('buy-chap',['as'=>'buyChap', 'uses'=>'ComicController@buyChap']);
+Route::post('localStorage',['as'=>'localStorage', 'uses'=>'ComicController@localStorage']);
+Route::post('muster',['as'=>'musterUser', 'uses'=>'user\UserController@musterUser']);
+Route::get('/{slug}', ['as'=>'postType','uses'=>'PagesController@type']);

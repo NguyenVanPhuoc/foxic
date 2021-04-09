@@ -1,0 +1,191 @@
+.comments {margin: 20px 0;}
+.comments .sec-title {color: #337ab7;}
+.list-comments {margin-top: 20px;}
+.form-reply-comment {
+	display: none;
+	margin-top: 10px;
+}
+.item-cmt {margin-bottom: 20px;}
+.item-cmt .flex-list {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	margin-bottom: 10px;
+}
+.item-cmt .avatar {
+	width: 60px;
+	text-align: center;
+}
+.item-cmt .avatar img {
+	width: 45px;
+	height: 45px;
+	border-radius: 50%;
+}
+.item-cmt .cmt-content {
+	width: calc(100% - 60px);
+	position: relative;
+	padding-right: 20px;
+}
+.item-cmt .edit_comment {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	display: inline-block;
+}
+.item-cmt .list-action {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	top: 100%;
+	right: -5px;
+	text-align: right;
+	min-width: 100px;
+	box-shadow: 0 3px 5px #a2a2a2;
+	border-radius: 3px;
+	display: none;
+	visibility: hidden;
+	opacity: 0;
+	-webkit-transition: all .25s linear;
+	   -moz-transition: all .25s linear;
+	    -ms-transition: all .25s linear;
+	     -o-transition: all .25s linear;
+	        transition: all .25s linear;
+}
+.item-cmt .edit_comment:hover .list-action, .item-cmt .edit_comment:focus .list-action {
+	display: block;
+	visibility: visible;
+	opacity: 1;
+}
+.item-cmt .list-action li {white-space: nowrap;}
+.item-cmt .list-action li a {
+	display: block;
+	padding: 5px 8px;
+}
+.item-cmt .user-info {margin-top: 0}
+.item-cmt .open-reply-form {color: #337ab7;}
+.item-cmt .user-info span {
+	font-size: 15px;
+	margin-left: 8px;
+	font-family: var(--font);
+	color: #999;
+    font-style: italic;
+}
+.item-cmt .list-replies {margin: 0 0 0 80px;}
+.item-cmt .list-replies .flex-list {margin-bottom: 30px;}
+.item-cmt .list-replies .avatar {width: 50px;}
+.item-cmt .list-replies .cmt-content {width: calc(100% - 50px);}
+.item-cmt .list-replies .avatar img {
+	width: 38px;
+	height: 38px;
+	border-radius: 50%;
+}
+.loadMore .load_more:hover, .loadMore .load_more:focus {text-decoration: none!important;}
+.loadMore .load_more i {margin: 0 5px;}
+.list-packages {
+	list-style-type: none;
+	margin: 0;
+	padding: 20px 8px;
+	position: relative;
+}
+form .list-packages {display: none}
+#editComment form .list-packages {display: block;}
+.list-packages a {display: block;}
+.list-stickers {
+	position: absolute;
+	bottom: 100%;
+	left: 0;
+	right: 0;
+	list-style-type: none;
+	margin: 0;
+	padding: 15px;
+	display: none;
+	border: 1px solid #e2e2e2;
+	box-shadow: 5px 5px 20px #999;
+	background-color: #f2f2f2;
+	border-radius: 10px;
+}
+.list-packages .buy-packages {
+	width: 36px;
+	height: 36px;
+	text-align: center;
+	line-height: 36px;
+	border-radius: 50%;
+	background: #cacaca;
+	color: var(--orange);
+	display: inline-block;
+	margin-right: 10px;
+}
+.list-packages li {
+	display: inline-block;
+	padding: 5px;
+}
+.item-package .package-btn {
+	padding: 8px;
+	border-radius: 5px;
+	background-color: #e2e2e2;
+}
+.page.stickers {padding: 20px 0;}
+.list-packages.packages {
+	display: flex;
+	margin-top: 30px;
+	flex-wrap: wrap;
+}
+.list-packages.packages .item-package .package-btn {background: transparent;}
+.list-packages.packages .item-package {
+	-ms-flex: 0 0 20%;
+    flex: 0 0 20%;
+    max-width: 20%;
+    padding: 10px 15px;
+    text-align: center;
+}
+.list-packages.packages .item-package .package-btn {
+	position: relative;
+	padding: 25px;
+	border: 1px solid #cacaca;
+	border-radius: 8px;
+}
+.list-packages.packages .package-btn span {
+	position: absolute;
+	top: 8px;
+	left: 8px;
+	width: 28px;
+	height: 20px;
+	border-radius: 3px;
+	font-size: 14px;
+	line-height: 20px;
+	color: #fff;
+	background: var(--orange);
+	display: block;
+}
+.list-packages.packages .package-btn img {width: 100%; border-radius: 8px;}
+.list-packages.packages .list-stickers {
+	top: 65%;
+	bottom: auto;
+	text-align: left;
+}
+#content .list-packages a:hover, #content .list-packages a:focus {text-decoration: none}
+.item-package .package-title {
+	font-size: 16px;
+	line-height: 22px;
+	margin: 10px 0;
+	max-height: 44px;
+	overflow: hidden;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	display: -webkit-box;
+	text-overflow: ellipsis;
+}
+.item-package .btn-cs {
+	padding: 6px 18px;
+	background: transparent;
+	border-radius: 20px;
+	border: 1px solid var(--orange);
+	color: var(--orange);
+}
+.item-package .btn-cs[disabled] {border-color: #989898; color: #989898;}
+#editComment .not-show {
+	display: none;
+}
+#editComment {}
+#editComment {}

@@ -1,0 +1,21 @@
+<?php
+	$amount = '0<small>vnđ</small>'; 
+	if(Auth::check()){
+		$user = Auth::user();
+		$amount = currencyNew(getAmount($user->id));
+	}
+?>
+@desktop
+	<aside class="pro-asMenu">
+		<div class="desc">
+			<ul class="action list-unstyled">
+				<li {{ Request::is('profile/order','profile/order/*') ? ' class=active' : '' }}><a href="{{ route('ordersUser') }}"><i class="fas fa-cart-plus"></i>{{ _('Đơn hàng') }}</a></li>
+				<li {{ Request::is('profile/media','profile/media/*') ? ' class=active' : '' }}><a href="{{ route('mediaProfile') }}"><i class="fas fa-images"></i>{{ _('Thư viện') }}</a></li>
+				<li {{ Request::is('profile/edit') ? ' class=active' : '' }}><a href="{{ route('editProfile') }}"><i class="fas fa-user-edit"></i>{{ _('Cập nhật') }}</a></li>
+				<li {{ Request::is('profile/password') ? ' class=active' : '' }}><a href="{{ route('editPassword') }}"><i class="fas fa-user-lock"></i>{{ _('Mật khẩu') }}</a></li>
+				<li><a href="{{ route('logout') }}"><i class="fas fa-sign-out-alt"></i>{{ _('Thoát') }}</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
+@enddesktop

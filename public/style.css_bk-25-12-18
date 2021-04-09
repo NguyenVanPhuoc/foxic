@@ -1,0 +1,185 @@
+@font-face {
+    font-family:Roboto;
+    src: url('fonts/Roboto-Regular.woff');
+}
+@font-face {
+    font-family:var(--font-bold);
+    src: url('fonts/Roboto-Bold.woff');
+}
+@font-face {
+    font-family:MontserratExtraLight;
+    src: url('fonts/Montserrat-ExtraLight.otf');
+}
+@font-face {
+    font-family:RobotoLight;
+    src: url('fonts/Roboto-Light.woff');
+}
+@font-face {
+    font-family:MontserratThin;
+    src: url('fonts/Montserrat-Thin.otf');
+}
+@font-face {
+    font-family:MontserratLight;
+    src: url('fonts/Montserrat-Light.otf');
+}
+@font-face {
+    font-family:Montserrat;
+    src: url('fonts/Montserrat-Regular.otf');
+}
+@font-face {
+    font-family:MontserratMedium;
+    src: url('fonts/Montserrat-Medium.otf');
+}
+@font-face {
+    font-family:MontserratSemiBold;
+    src: url('fonts/Montserrat-SemiBold.otf');
+}
+@font-face {
+    font-family:MontserratBold;
+    src: url('fonts/Montserrat-Bold.otf');
+}
+@font-face {
+    font-family:MontserratExtraBold;
+    src: url('fonts/Montserrat-ExtraBold.otf');
+}
+@font-face {
+    font-family:MontserratBlack;
+    src: url('fonts/Montserrat-Black.otf');
+}
+:root{
+    --font-thin: MontserratThin;
+    --font-extraLight: MontserratExtraLight;
+    --font-light: MontserratLight;
+    --font: Montserrat;
+    --font-medium: MontserratMedium;
+    --font-semiBold: MontserratSemiBold;
+    --font-bold: MontserratBold;
+    --font-extraBold: MontserratExtraBold;
+    --font-black: MontserratBlack;
+}
+
+body{
+    font-family: var(--font);
+    margin: 0;
+    padding: 0;
+    font-size: 15px;
+    line-height: 23px;
+    color: #595959;    
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+body.active{
+    height: 100%;
+    overflow: hidden;
+    width: 100%;
+    position: fixed;
+}
+img{max-width: 100%;}
+.container{ 
+    max-width: 1400px; 
+    width: 1400px;
+}
+a{color: #595959}
+a:hover{text-decoration: none; color: #ff9e1c}
+strong{font-family: var(--font-bold)}
+#wrapper{overflow: hidden;}
+p{margin-bottom: 5px;}
+#library-op {
+    z-index: 30000;
+    width: 98%;
+    margin: 0 auto;
+}
+#library-op .modal-footer{
+    position: fixed;
+    right: 45px;
+    bottom: 0;
+}
+#library-op .modal-dialog {
+    max-width: 100%;
+    width: 100%;
+}
+.list-media {
+    list-style: none;
+    padding: 0;
+}
+.list-media li {
+    float: left;
+    width: 10%;
+    margin: 8px;
+    height: 100px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+.list-media li img {
+    cursor: pointer;
+    width: 100%;
+}
+a.come-back{
+    background: #dddddd;
+    color: #333;
+}
+.container{max-width: 100%;}
+select{cursor: pointer;}
+select, textarea{
+    width: 100%;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+#backtotop {
+    width: 50px;
+    height: 50px;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+#backtotop i {
+    font-size: 30px;
+    color: #f99b28;
+}
+.modal-backdrop{background-color: rgba(0, 0, 0, 0.51);}
+#overlay, .overlay{
+    position: fixed;
+    background: #000;
+    opacity: 0.7;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1000vh;
+    display: none;
+    z-index: 3000;
+}
+#mobi-nav{
+    left: -270px;
+    padding: 0;
+    top: 0;
+    width: 270px;
+    position: fixed;
+    height: -webkit-fill-available;
+    background-color: #fff;
+    z-index: 3002;
+    -webkit-transition: .4s;
+    -o-transition: .4s;
+    transition: .4s;
+    overflow-y: auto;
+    opacity: 0;
+}
+input[type=file]:focus, input[type=checkbox]:focus, input[type=radio]:focus, a:focus, a:hover{
+    outline: none;
+    outline-offset: 0;
+}
+a:focus, a:hover{ text-decoration: none;}
+.hover{ display: none;}
+.show-320, .show-384, .show-600, .show-991{ display: none;}

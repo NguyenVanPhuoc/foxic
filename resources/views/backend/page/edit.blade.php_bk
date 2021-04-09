@@ -1,0 +1,142 @@
+@extends('backend.layout.index')
+@section('title','Sửa Trang')
+@section('content')
+<?php 
+use App\GroupMetas;
+use App\Metas;
+$groupMetas = GroupMetas::where('post_id','=',$page->id)->get();
+?>
+<div id="edit-page" class="container page">
+	<div class="head">
+		<a href="{{route('pagesAdmin')}}" class="back-icon"><i class="fa fa-angle-left" aria-hidden="true"></i> Tất cả</a>
+		<h1 class="title">{{$page->title}}</h1>
+	</div>
+	@if(count($errors)>0)
+	<div class="alert alert-danger">
+		<ul>
+			@foreach($errors->all() as $error)
+			<li>{{$error}}</li>	
+			@endforeach
+		</ul>
+	</div>
+	@endif
+	<div class="notify"></div>
+	<form id="{{ $page->id }}" action="{{ url()->current() }}" method="post" name="editPage" class="dev-form edit-post">
+		<input type="hidden" name="_token" value="{{csrf_token()}}"/>
+		<div id="post-title" class="form-group section">
+			<label for="title">Tiêu đề<small>(*)</small></label>
+			<input type="text" name="title" class="form-control" value="{{ $page->title }}"/>		
+		</div>
+		<div id="post-content" class="form-group section">
+			<label for="name">Nội dung<small>(*)</small></label>
+			<textarea name="content" id="editor">{{ $page->content }}</textarea>
+		</div>
+		<div id="frm-metaKey" class="form-group">
+			<label for="metakey">Từ khóa</label>
+			<input type="text" name="metakey" class="form-control" placeholder="Nhập từ khóa SEO" class="frm-input">
+		</div>
+		<div id="frm-metaValue" class="form-group">
+			<label class="metaValue">Nội dung SEO</label>
+			<textarea name="metaValue" placeholder="Nhập nội dung SEO" class="form-control"></textarea>
+		</div>
+		@foreach ($groupMetas as $group)
+		<?php $group = GroupMetas::findBySlug($group->slug);			
+		$metas = Metas::where('groupmeta_id','=', $group->id)->get();
+		echo '<div id="fields" class="row">'		;
+		foreach ($metas as $meta): ?>
+			<div id="{{ $meta->id }}" class="item col-md-{{ $meta->width }}">
+				<div class="form-group">
+					<label for="meta_name">{{$meta->title}}<small>(*)</small></label>
+					<?php if($meta->type=="text"):?>
+						<input type="text" name="meta_{{ $meta->id }}" id="meta_{{ $meta->id }}" class="form-control meta-value" value="{{ $meta->content }}" data-type="{{ $meta->type }}" />
+						<?php elseif($meta->type=="textarea"):?>
+							<textarea name="meta_{{ $meta->id }}" id="meta_{{ $meta->id }}" class="form-control meta-value" data-type="{{ $meta->type }}">{{ $meta->content }}</textarea>
+							<?php else:?>
+								<textarea name="meta_{{ $meta->id }}" id="meta_{{ $meta->id }}" class="form-control meta-value" data-type="{{ $meta->type }}">{{ $meta->content }}</textarea>
+								<script type="text/javascript">ckeditor("meta_{{ $meta->id }}")</script>
+							<?php endif;?>
+						</div>
+					</div>								
+				<?php endforeach;?>
+			</div>
+			@endforeach
+			<div class="group-action">
+				<a href="{{route('deletePageAdmin',['id'=>$page->id])}}" class="btn btn-delete">Xóa</a>
+				<button type="submit" class="btn btn-primary">Sửa</button>
+				<a href="{{route('pagesAdmin')}}" class="btn btn-cancel">Trở lại</a>
+			</div>
+		</form>
+	</div>
+	<script type="text/javascript">		
+		ckeditor("editor");
+		$(document).ready(function(){		
+			$(".edit-post .btn-group .btn-primary").click(function(){	
+				$(".notify").html();
+				var _token = $(".edit-post input[name='_token']").val();
+				var title = $(".edit-post #post-title input").val();
+				var content = CKEDITOR.instances['editor'].getData();
+				var post_id = $(".edit-post").attr("id");
+				var link = $(".edit-post").attr("action");
+				var metaFields = new Array();
+				var count = 0;
+				$("#fields .item").each(function(){		
+					var meta = "meta_"+$(this).attr("id");
+					var type = $(this).find("meta-value").attr("data-type"); 
+					var content = "";
+					if(type == "editor"){
+						content = CKEDITOR.instances[meta].getData();
+					}else{
+						content = $(this).find(".meta-value").val();
+					}
+					metaFields[count] = {
+						'id' : $(this).attr("id"),
+						'content' : content
+					}
+					count = count + 1;
+				});
+				$.ajax({
+					type:'POST',            
+					url:link,
+					cache: false,
+					data:{
+						'_token': _token,
+						'title': title,
+						'content': content,
+						'post_id': post_id,
+						'metaFields': JSON.stringify(metaFields)
+					},
+					success:function(data){
+						if(data!="error"){						
+							$(".notify").html('<div class="alert alert-success">Cập nhật thành công</div>');
+						}
+					}
+				})
+				return false;
+			});
+		//delete location
+		$(".dev-form .btn-delete").click(function(){
+			var href = $(this).attr("href");
+			(new PNotify({
+				title: 'Xóa',
+				text: 'Bạn muốn xóa trang này?',
+				icon: 'glyphicon glyphicon-question-sign',
+				type: 'error',
+				hide: false,
+				confirm: {
+					confirm: true
+				},
+				buttons: {
+					closer: false,
+					sticker: false
+				},
+				history: {
+					history: false
+				}
+			})).get().on('pnotify.confirm', function() {			    
+				window.location.href = href;
+			});
+			return false;
+		});
+	})
+</script>
+@stop

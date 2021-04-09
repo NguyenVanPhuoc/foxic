@@ -1,0 +1,296 @@
+$(document ).ready(function(){	
+    //back to top
+    $('body').append('<div id="backtotop"><i class="fa fa-chevron-circle-up" aria-hidden="true"></i></div>');
+        $(window).scroll(function() {
+            if($(window).scrollTop() >200) {
+              $('#backtotop').fadeIn();
+              } else {
+              $('#backtotop').fadeOut();
+              }
+            });
+        $('#backtotop').click(function() {
+        $('html, body').animate({scrollTop:0},500);
+    });
+	$('.scrollbar-inner').scrollbar();	
+	//empty search form
+	$(".search-frm").on('click','.fa-close', function(){
+		$(".search-frm .s").val("");
+	})
+	//create slug for post
+	$(".add-post #title .title").keyup(function(){
+		$(".add-post #title .slug").val($(this).val());
+	});
+	/**
+	 * dell select item
+	 */
+	$("#check-all").click(function(){
+		if($(this).find("input").is(":checked")){			
+			$(".dev-form tbody .check input").prop("checked", true);
+			$(".dev-form .table").before('<button class="dell-all btn btn-top">Xóa</button>');
+			$(".dev-form .table").after('<button class="dell-all btn btn-bottom">Xóa</button>');
+		}else{			
+			$(".dev-form .dell-all").remove();			
+			$(".dev-form tbody .check input").prop('checked', false);
+		}
+	})
+	$(".dev-form tbody .check").click(function(){ 
+		var items = new Array();
+		$(".dev-form tbody tr").each(function(){
+			if($(this).find(".check input").is(":checked")){
+				items.push($(this).find("input").val());
+			}
+		});		
+		if(items.length>0){
+			$(".dev-form .table").before('<button class="dell-all btn btn-top">Xóa</button>');
+			$(".dev-form .table").after('<button class="dell-all btn btn-bottom">Xóa</button>');
+		}else{
+			$(".dev-form .dell-all").remove();
+		}
+	});	
+	/**
+	 * menu left
+	 */
+	$("#sidebar #menu .has-children").click(function(){		
+		var check = 0;
+		if($(this).hasClass("active")){
+			check = 1;
+		}
+		$("#sidebar #menu .has-children").removeClass('active');
+		if(check==0){
+			$(this).toggleClass("active");			
+		}	
+	});
+	//check change password
+	$("#change-user .check-password .custom-control-input").click(function(){		
+		if($(this).is(":checked")){			
+			$("#change-user .change-password .form-control").removeAttr("disabled");
+			$("#change-user .change-password").slideDown();
+			$(this).val("on");
+		}else{
+			$(this).val("");
+			$("#change-user .change-password .form-control").attr("disabled","");
+			$("#change-user .change-password").slideUp();
+		}
+	})
+
+	$(".dev-form .action").on('click', '.delete', function(){
+		var title = $(this).parents("tr").find(".title").text();
+		var link = $(this).attr("href");
+		$('.delete-modal .modal-footer .btn-primary').attr("href",link);
+		$('.delete-modal .modal-body p').html("Bạn chắc là muốn xóa <strong>"+title+" ?</strong>");		
+		$('.delete-modal').modal('toggle');
+		return false;
+	});
+	
+	//media library
+	$(".dev-form").on('click','.library',function(){
+		$("#library-op #file-detail").empty();
+		var _token = $(".dev-form input[name='_token']").val();		
+		var link = $(this).attr("href");
+		var tag_id = $(this).parents(".img-upload").attr("id");			
+		$("#library-op .modal-footer .btn-primary").attr("id",tag_id);
+		$(".loadding").show();
+		$.ajax({
+			type:'POST',            
+			url:link,
+			cache: false,
+			data:{
+				'_token': _token
+			},
+			success:function(data){
+				$(".loadding").hide();				
+				if(data.message!='error'){
+					$('#library-op .modal-body #files .list-media').html(data.html);					
+					$("#library-op #files .limit").val(data.limit);					
+					$("#library-op #files .current").val(data.current);
+					$("#library-op").modal('toggle');
+					var pagination = 10;
+					var mediaCatId = $("#library-op #media-cat .dropdown-toggle").attr("data-value");
+					var sTitle = $("#library-op #media-find input").val();
+					var total = data.total;
+					var current = data.current;
+					$("#library-op #files").scroll(function(){
+						if(total>current){
+							if($("#library-op #files").scrollTop() + $("#library-op #files").height()>= $("#library-op .list-media").height() + pagination) {
+								$.ajax({
+									type:'POST',            
+									url:$("#library-op .more-media").val(),
+									cache: false,
+									data:{
+										'_token': _token,
+										'catId': mediaCatId,
+										'sTitle': sTitle,										
+										'limit': $("#library-op #files .limit").val(),										
+										'current': $("#library-op #files .current").val(),
+									},
+									success:function(data){
+										if(data!="error"){
+											total = data.total;
+											current = data.current
+											$('#library-op .modal-body #files .list-media').append(data.html);											
+											$("#library-op #files .limit").val(data.limit);
+											$("#library-op #files .offset").val(data.offset);
+											$("#library-op #files .current").val(data.current);
+										}
+									}
+								})					       
+						    }
+					    }
+					});
+				}
+			}
+		})
+		return false;			
+	});
+	$("#library-op .nav-tabs li").click(function(){
+		$("#library-op .nav-tabs li").removeClass("active");
+		$(this).addClass("active");
+	});
+
+	//change thumbnail
+	$("#library-op .modal-footer").on('click','.btn-primary',function(){			
+		$("#library-op .modal-footer .library-notify").empty();
+		var img_url = $("#library-op .modal-body li.active img").attr("src");
+		var img_alt = $("#library-op .modal-body li.active img").attr("alt");
+		var img_id = $(".list-media li.active").attr("id").split("-");
+		var tag_id = $(this).attr("id");
+		if(img_url === undefined){	
+			$("#library-op .modal-footer .library-notify").text("Vui lòng chọn file!!");
+		}else{
+			$(".dev-form #"+ tag_id+ " img").attr("src", img_url);
+			$(".dev-form #"+ tag_id+ " .thumb-media").val(img_id[1]);
+			$("#library-op").modal('toggle');
+			$(".modal-backdrop").modal('toggle');
+		}
+		return false;
+	})
+	//detail media file
+	$("#library-op.single .modal-body").on('click', '.list-media li', function(){			
+		$(".list-media li").removeClass("active");
+		$(this).addClass('active');
+		var img_link = $(".list-media li.active img").attr("data-image");
+		var img_alt = $(".list-media li.active img").attr("alt");
+		var img_date = $(".list-media li.active img").attr("data-date");
+		var img_id = $(".list-media li.active").attr("id").split("-");
+		var html ="<div class='wrap'>";		
+		html += "<h3>Thông tin file</h3>";
+		html += "<img src='"+img_link+"' alt='"+img_alt+"' />";
+		html +="<h4>"+img_alt+"</h4>";
+		html +="<p class='date'>"+img_date+"</p>";
+		html +="<a href='#' class='delete' id='"+img_id[1]+"'>Xóa ảnh</a>";
+		html +="</div>";
+		$("#library-op #file-detail").html(html);
+	});
+	
+	//delete media
+	$("#library-op #file-detail").on('click', '.delete', function(){
+		var _token = $("#library-op .tab-content #media input[name='_token']").val();
+		var id = $(this).attr("id");
+		var link = $("#library-op .tab-content #media form").attr("action");
+		$.ajax({
+			type:'POST',            
+			url:link,
+			cache: false,
+			data:{
+				'_token': _token,
+				'id': id
+			},
+			success:function(data){
+				if(data!="error"){
+					$("#library-op .modal-body #image-"+id).remove();
+					$("#library-op #file-detail").empty();
+					if(data!="success"){
+						$("#avatar img").attr("src", data);
+					}
+				}
+			}
+		})
+		return false;
+	});
+
+	//view detail order
+	$(".tb-results .action .view").click(function(){		
+		var id = $(this).attr("data-value");
+		var check = 0;
+		if($(".tb-results tbody .item-"+id).hasClass("active")){
+			check = 1;
+		}
+		$(".tb-results tbody .detail").removeClass('active');
+		if(check==0){
+			$(".tb-results tbody .item-"+id).addClass("active");
+		}
+		return false;
+	});
+	//dropdown
+	$(".local-dropdown .dropdown-menu .list-item a").click(function(){
+		$(this).parents('.dropdown').find('.dropdown-toggle').text($(this).text());
+		$(this).parents('.dropdown').find('.dropdown-toggle').attr("data-value",$(this).attr("data-value"));
+		$(this).parents(".dropdown-menu").removeClass("show");
+		return false;
+	});
+	//vs-drop
+	$(".vs-drop .list-item a").click(function(){
+		$(this).parents(".vs-drop").find(".dropdown-toggle").attr("data-value",$(this).attr("data-value"));
+		$(this).parents(".vs-drop").find(".dropdown-toggle").text($(this).text());
+	});
+	/**
+	 * tags
+	 */
+	$(".tags input").keypress(function(e){
+		if(e.which == 13) {			
+			if($(this).val()!=""){
+		    	$(this).parents(".tags").find(".list").append('<li class="new"><i class="fa fa-close" aria-hidden="true"></i>'+$(this).val()+'</li>');
+		    	$(this).parents(".tags").find("input").val("");
+		    }
+	    	return false;
+	    }	    
+	});
+	$(".tags button").click(function(){
+		var value = $(this).parents(".tags").find("input").val();
+		if(value!=""){
+			$(this).parents(".tags").find(".list").append('<li class="new"><i class="fa fa-close" aria-hidden="true"></i><span>'+value+'</span></li>');	
+			$(this).parents(".tags").find("input").val("");
+		}		
+		return false;
+	});
+	$(".tags .list").on('click','i',function(){
+		$(this).parent("li").remove();
+	});
+});
+//format currency
+function formatCurrency(number, places, symbol, thousand, decimal) {
+    number = number || 0;
+    places = !isNaN(places = Math.abs(places)) ? places : 0;
+    symbol = symbol !== undefined ? symbol : "đ";
+    thousand = thousand || ".";
+    decimal = decimal || ".";
+    var negative = number < 0 ? "-" : "",
+        i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + "",
+        j = (j = i.length) > 3 ? j % 3 : 0;
+    return negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "")+" "+symbol;
+}
+//convert to slug
+function convertToSlug(str){
+	str = str.replace(/^\s+|\s+$/g, ''); // trim
+	str = str.toLowerCase();
+
+	// remove accents, swap ñ for n, etc
+	var from = "àáäảâẫạặăẵèéëêệẹìịíïîòóöôộùúüûưủñçđ·/_,:;";
+	var to   = "aaaaaaaaaaeeeeeeiiiiiooooouuuuuuncd------";
+
+	for (var i=0, l=from.length ; i<l ; i++)
+	{
+		str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+	}
+
+	str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+		.replace(/\s+/g, '-') // collapse whitespace and replace by -
+		.replace(/-+/g, '-'); // collapse dashes
+
+	return str;
+}
+//validate email
+function validateEmail($email) {
+  var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+  return emailReg.test( $email );
+}

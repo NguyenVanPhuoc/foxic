@@ -1,0 +1,64 @@
+<?php
+namespace App\Http\Controllers;
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Actions\CreateNewComment;
+use App\Comment;
+use App\Comic;
+use App\Sticker;
+use App\StickerCate;
+use Validator;
+
+class CommentController extends Controller {
+
+	public function loadMore(Request $request, $comic_id){
+		$comic = Comic::select('id')->find($comic_id);
+		$offset = (intval($request->current) * 5);
+		if($comic) {
+			$comment_query = function($query) {
+                $query->latest()->published();
+            };
+			$comments = Comment::with(['children'=>$comment_query])->where('comic_id', $comic_id)->where('parent', 0)->latest()->offset($offset)->limit(5)->published()->get();
+			$total = Comment::where('parent', 0)->published()->count();
+			$html = '';
+			if($comments) {
+				foreach ($comments as $comment) {
+					$html .= view('parts.comment-item', ['comment'=>$comment])->render();
+				}
+			}
+			return json_encode(array('check' => 'true', 'html' => $html, 'has_load' => $total > ($offset + 6)));
+		}else{
+			return json_encode(array('check' => 'false', 'html' => $html, 'has_load' => $total > ($offset + 6)));
+		}
+	}
+
+	public function store(Request $request, $comic_id, CreateNewComment $cmt){
+		$comic = Comic::find($comic_id);
+		if($comic) {
+			$request['content'] = $request->frm_content;
+			$request['comic_id'] = $comic_id;
+			$request['parent'] = 0;
+			$newCMT = $cmt->create($request->all());
+			if($newCMT) $request->session()->flash('success', 'Bình luận thành công!');
+            return redirect()->route('listChap',['slugComic'=>$comic->slug]);
+		}else{
+			$request->session()->flash('error', 'Không tìm thấy truyện!');
+            return redirect()->route('home');
+		}
+	}
+
+	public function reply(Request $request, $comment_id, CreateNewComment $cmt){
+		$comment = Comment::find($comment_id);
+		if($comment) {
+			$request['parent'] = $comment_id;
+			$request['comic_id'] = $comment->comic_id;
+			$newCMT = $cmt->create($request->all());
+			if($newCMT) {
+				$html = view('parts.comment-item-child', ['comment_child'=>$newCMT])->render();
+				return json_encode(array('check' => 'true', 'messages' => 'Trả lời bình luận thành công!', 'html' => $html));
+			}else return json_encode(array('check' => 'false', 'messages' => 'Sticker không tồn tại hoặc chưa mua gói stickers!'));
+		}
+		return json_encode(array('check' => 'false', 'messages' => 'Comment không tồn tại!'));
+	}
+}
